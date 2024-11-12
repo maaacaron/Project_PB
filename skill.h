@@ -1,7 +1,7 @@
-//#define START_ATTACKSKILL_ID 0
-//#define START_BUFFSKILL_ID 100
-//#define START_DEBUFFSKILL_ID 200
-//#define START_HEALSKILL_ID 300
+#define START_ATTACKSKILL_ID 0
+#define START_BUFFSKILL_ID 100
+#define START_DEBUFFSKILL_ID 200
+#define START_HEALSKILL_ID 300
 
 #define ATTACK 1
 #define DEFENSE 2
@@ -12,12 +12,16 @@
 
 struct attackSkill
 {
+    int SID;
+    char skill_name[50];
     int skill_damage;
     char property[50];
 };
 
 struct buffSkill
 {
+    int SID;
+    char skill_name[50];
     int buff_type;
     
     int attack_up_value;
@@ -27,6 +31,8 @@ struct buffSkill
 
 struct debuffSkill
 {
+    int SID;
+    char skill_name[50];
     int debuff_type;
 
     int attack_down_value;
@@ -36,18 +42,7 @@ struct debuffSkill
 
 struct healSkill
 {
-    int heal_value;
-};
-
-
-struct skill
-{
     int SID;
     char skill_name[50];
-    int skill_type;
-
-    struct attackSkill as;
-    struct buffSkill bs;
-    struct debuffSkill ds;
-    struct healSkill hs;
+    int heal_value;
 };

@@ -1,8 +1,11 @@
-main: main.o copy.o
-	gcc -o main main.o copy.o
-main.o: main.c copy.h
-	gcc -c main.c
-copy.o: copy.c
-	gcc -c copy.c
-clean:
-	rm -rf main main.o copy.o
+
+createSkill: createSkill.o
+	gcc -o createSkill createSkill.o
+updateSkill: updateSkill.o
+	gcc -o updateSkill updateSkill.o
+createSkill.o: createSkill.c skill.h
+	gcc -c createSkill.c
+updateSkill.o: updateSkill.c skill.h
+	gcc -c updateSkill.c
+clear:
+	rm -rf createMoster createMonster.o

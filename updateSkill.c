@@ -4,12 +4,16 @@
 
 int main(int argc, char *argv[])
 {
-	struct skill rec;
+    
+    struct attackSkill rec_AS;
+    struct buffSkill rec_BS;
+    struct debuffSkill rec_DS;
+    struct healSkill rec_HS;
+
 	int SID;
 	char c;
 	FILE *fp;
     int fread_return;
-    size_t rec_size;
 
 	if (argc != 2)
 	{
@@ -27,168 +31,177 @@ int main(int argc, char *argv[])
 		printf("수정할 스킬의 ID : ");
 		if (scanf("%d", &SID) == 1)
 		{
-            rec_size = sizeof(rec.skill_name) + sizeof(rec.skill_type);
             if(SID % 100 == 0)          //공격형
             {
-                rec_size += sizeof(rec.as);
-			    fseek(fp, (SID) * rec_size, SEEK_SET);
-                fread_return = fread(&rec, rec_size, 1, fp);
-                fseek(fp, -rec_size, SEEK_CUR);
+			    fseek(fp, SID * sizeof(rec_AS), SEEK_SET);
+                fread_return = fread(&rec_AS, sizeof(rec_AS), 1, fp);
+                fseek(fp, -sizeof(rec_AS), SEEK_CUR);
             }
 
             else if(SID % 100 == 1)     //버프
             {
-                rec_size += sizeof(rec.bs);
-			    fseek(fp, (SID) * rec_size, SEEK_SET);
-                fread_return = fread(&rec, rec_size, 1, fp);
-                fseek(fp, -rec_size, SEEK_CUR);
+                fseek(fp, START_ATTACKSKILL_ID * sizeof(rec_AS), SEEK_SET);         //위치 +100(공격스킬 크기)
+			    fseek(fp, (SID - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);   //위치 +(SID - 100)(버프스킬 크기)
+                fread_return = fread(&rec_BS, sizeof(rec_BS), 1, fp);
+                fseek(fp, -sizeof(rec_BS), SEEK_CUR);
             }
 
             else if(SID % 100 == 2)     //디버프
             {
-                rec_size += sizeof(rec.ds);
-			    fseek(fp, (SID) * rec_size, SEEK_SET);
-                fread_return = fread(&rec, rec_size, 1, fp);
-                fseek(fp, -rec_size, SEEK_CUR);
+                fseek(fp, START_ATTACKSKILL_ID * sizeof(rec_AS), SEEK_SET);                         //위치 +100(공격스킬 크기)
+                fseek(fp, (START_BUFFSKILL_ID - START_ATTACKSKILL_ID) * sizeof(rec_BS), SEEK_CUR);  //위치 +100(버프스킬 크기)
+			    fseek(fp, (SID - START_DEBUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);   //위치 +(SID - 200)(디버프스킬 크기)
+                fread_return = fread(&rec_DS, sizeof(rec_DS), 1, fp);
+                fseek(fp, -sizeof(rec_DS), SEEK_CUR);
             }
             
             else if(SID % 100 == 3)     //힐
             {
-                rec_size += sizeof(rec.hs);
-			    fseek(fp, (SID) * rec_size, SEEK_SET);
-                fread_return = fread(&rec, rec_size, 1, fp);
-                fseek(fp, -rec_size, SEEK_CUR);
+                fseek(fp, START_ATTACKSKILL_ID * sizeof(rec_AS), SEEK_SET);                         //위치 +100(공격스킬 크기)
+                fseek(fp, (START_BUFFSKILL_ID - START_ATTACKSKILL_ID) * sizeof(rec_BS), SEEK_CUR);  //위치 +100(버프스킬 크기)
+                fseek(fp, (START_DEBUFFSKILL_ID - START_BUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);  //위치 +100(디버프스킬 크기)
+			    fseek(fp, (SID - START_HEALSKILL_ID) * sizeof(rec_HS), SEEK_CUR);   //위치 +(SID - 300)(힐스킬 크기)
+                fread_return = fread(&rec_HS, sizeof(rec_HS), 1, fp);
+                fseek(fp, -sizeof(rec_HS), SEEK_CUR);
             }
             else printf("부적절한 ID입니다.");
             
             
             if (fread_return > 0)
             {
-                if(rec.skill_type == 0){
-                    printf("스킬 ID : %6d 이름 : %4s 종류 : %4s\n", rec.SID, rec.skill_name, "공격");
-                }
-                else if(rec.skill_type == 1){
-                    printf("스킬 ID : %6d 이름 : %4s 종류 : %4s\n", rec.SID, rec.skill_name, "버프");
-                }
-                else if(rec.skill_type == 2){
-                    printf("스킬 ID : %6d 이름 : %4s 종류 : %4s\n", rec.SID, rec.skill_name, "디버프");
-                }
-                else if(rec.skill_type == 3){
-                    printf("스킬 ID : %6d 이름 : %4s 종류 : %4s\n", rec.SID, rec.skill_name, "힐");
-                }
-                printf("새로운 이름 입력 : ");
-                scanf("%s", &rec.skill_name);
-                printf("새로운 스킬 종류 입력 (0: 공격, 1: 버프, 2: 디버프, 3: 힐) : ");
-                scanf("%d", &rec.skill_type);
+                if(SID % 100 == 0){
+                    printf("현재 스킬 ID : %6d 이름 : %4s 종류 : %4s\n", rec_AS.SID, rec_AS.skill_name, "공격");
+                    printf("새로운 이름 입력 : ");
+                    scanf("%s", &rec_AS.skill_name);
 
-                if(rec.skill_type == 0)
-                {
                     printf("\n공격형 스킬\n");
-                    printf("데미지 : %3d 스킬 속성 : %3s\n", rec.as.skill_damage, rec.as.property);
+                    printf("현재 데미지 : %3d 스킬 속성 : %3s\n", rec_AS.skill_damage, rec_AS.property);
+                    
                     printf("새로운 공격 스킬 입력\n데미지  스킬속성\n");
-                    if(scanf("%d %s",&rec.as.skill_damage, &rec.as.property) != 2) break;
-                    fwrite(&rec, rec_size, 1, fp);
+                    if(scanf("%d %s",&rec_AS.skill_damage, &rec_AS.property) != 2) break;
+                    fwrite(&rec_AS, sizeof(rec_AS), 1, fp);
                 }
 
-                if(rec.skill_type == 1)
-                {
+
+                else if(SID % 100 == 1){
+                    printf("현재 스킬 ID : %6d 이름 : %4s 종류 : %4s\n", rec_BS.SID, rec_BS.skill_name, "버프");
+
+                    printf("새로운 이름 입력 : ");
+                    scanf("%s", &rec_BS.skill_name);
+
+
                     printf("\n버프 스킬\n");
-                    if(rec.bs.buff_type == 1) printf("현재 버프 종류 : 공격력\n");
-                    if(rec.bs.buff_type == 2) printf("현재 버프 종류 : 방어력\n");
-                    if(rec.bs.buff_type == 3) printf("현재 버프 종류 : 공격력 + 방어력\n");
-                    if(rec.bs.buff_type == 4) printf("현재 버프 종류 : 스피드\n");
-                    if(rec.bs.buff_type == 5) printf("현재 버프 종류 : 공격력 + 스피드\n");
-                    if(rec.bs.buff_type == 6) printf("현재 버프 종류 : 방어력 + 스피드\n");
-                    if(rec.bs.buff_type == 7) printf("현재 버프 종류 : 공격력 + 방어력 + 스피드\n");
+                    if(rec_BS.buff_type == 1) printf("현재 버프 종류 : 공격력\n");
+                    if(rec_BS.buff_type == 2) printf("현재 버프 종류 : 방어력\n");
+                    if(rec_BS.buff_type == 3) printf("현재 버프 종류 : 공격력 + 방어력\n");
+                    if(rec_BS.buff_type == 4) printf("현재 버프 종류 : 스피드\n");
+                    if(rec_BS.buff_type == 5) printf("현재 버프 종류 : 공격력 + 스피드\n");
+                    if(rec_BS.buff_type == 6) printf("현재 버프 종류 : 방어력 + 스피드\n");
+                    if(rec_BS.buff_type == 7) printf("현재 버프 종류 : 공격력 + 방어력 + 스피드\n");
+
 
                     printf("새로운 버프 종류 입력 : ");
-                    scanf("%d",&rec.bs.buff_type);
+                    scanf("%d",&rec_BS.buff_type);
 
-                    if(rec.bs.buff_type == 1){
+                    if(rec_BS.buff_type == 1){
                         printf("공격력 증가량 입력 : ");
-                        scanf("%d", &rec.bs.attack_up_value);
+                        scanf("%d", &rec_BS.attack_up_value);
                     }
-                    if(rec.bs.buff_type == 2){
+                    if(rec_BS.buff_type == 2){
                         printf("방어력 증가량 입력 : ");
-                        scanf("%d", &rec.bs.defense_up_value);
+                        scanf("%d", &rec_BS.defense_up_value);
                     }
-                    if(rec.bs.buff_type == 3){
+                    if(rec_BS.buff_type == 3){
                         printf("증가량 입력\n공격력 방어력");
-                        if(scanf("%d %d", &rec.bs.attack_up_value, &rec.bs.defense_up_value) != 2) break;
+                        if(scanf("%d %d", &rec_BS.attack_up_value, &rec_BS.defense_up_value) != 2) break;
                     }
-                    if(rec.bs.buff_type == 4){
+                    if(rec_BS.buff_type == 4){
                         printf("스피드 증가량 입력 : ");
-                        scanf("%d", &rec.bs.speed_up_value);
+                        scanf("%d", &rec_BS.speed_up_value);
                     }
-                    if(rec.bs.buff_type == 5){
+                    if(rec_BS.buff_type == 5){
                         printf("증가량 입력\n공격력 스피드");
-                        if(scanf("%d %d", &rec.bs.attack_up_value, &rec.bs.speed_up_value) != 2) break;
+                        if(scanf("%d %d", &rec_BS.attack_up_value, &rec_BS.speed_up_value) != 2) break;
                     }
-                    if(rec.bs.buff_type == 6){
+                    if(rec_BS.buff_type == 6){
                         printf("증가량 입력\n방어력 스피드");
-                        if(scanf("%d %d", &rec.bs.defense_up_value, &rec.bs.speed_up_value) != 2) break;
+                        if(scanf("%d %d", &rec_BS.defense_up_value, &rec_BS.speed_up_value) != 2) break;
                     }
-                    if(rec.bs.buff_type == 7){
+                    if(rec_BS.buff_type == 7){
                         printf("증가량 입력\n공격력 방어력 스피드");
-                        if(scanf("%d %d", &rec.bs.attack_up_value, &rec.bs.defense_up_value, &rec.bs.speed_up_value) != 3) break;
+                        if(scanf("%d %d", &rec_BS.attack_up_value, &rec_BS.defense_up_value, &rec_BS.speed_up_value) != 3) break;
                     }
-                    fwrite(&rec, rec_size, 1, fp);
+                    fwrite(&rec_BS, sizeof(rec_BS), 1, fp);
                 }
 
-                if(rec.skill_type == 2)
-                {
+
+                else if(SID % 100 == 2){
+                    printf("현재 스킬 ID : %6d 이름 : %4s 종류 : %4s\n", rec_DS.SID, rec_DS.skill_name, "디버프");
+
+                    printf("새로운 이름 입력 : ");
+                    scanf("%s", &rec_DS.skill_name);
+
+
                     printf("\n디버프 스킬\n");
-                    if(rec.ds.debuff_type == 1) printf("현재 디버프 종류 : 공격력\n");
-                    if(rec.ds.debuff_type == 2) printf("현재 디버프 종류 : 방어력\n");
-                    if(rec.ds.debuff_type == 3) printf("현재 디버프 종류 : 공격력 + 방어력\n");
-                    if(rec.ds.debuff_type == 4) printf("현재 디버프 종류 : 스피드\n");
-                    if(rec.ds.debuff_type == 5) printf("현재 디버프 종류 : 공격력 + 스피드\n");
-                    if(rec.ds.debuff_type == 6) printf("현재 디버프 종류 : 방어력 + 스피드\n");
-                    if(rec.ds.debuff_type == 7) printf("현재 디버프 종류 : 공격력 + 방어력 + 스피드\n");
+                    if(rec_DS.debuff_type == 1) printf("현재 디버프 종류 : 공격력\n");
+                    if(rec_DS.debuff_type == 2) printf("현재 디버프 종류 : 방어력\n");
+                    if(rec_DS.debuff_type == 3) printf("현재 디버프 종류 : 공격력 + 방어력\n");
+                    if(rec_DS.debuff_type == 4) printf("현재 디버프 종류 : 스피드\n");
+                    if(rec_DS.debuff_type == 5) printf("현재 디버프 종류 : 공격력 + 스피드\n");
+                    if(rec_DS.debuff_type == 6) printf("현재 디버프 종류 : 방어력 + 스피드\n");
+                    if(rec_DS.debuff_type == 7) printf("현재 디버프 종류 : 공격력 + 방어력 + 스피드\n");
 
                     printf("새로운 디버프 종류 입력 : ");
-                    scanf("%d",&rec.ds.debuff_type);
+                    scanf("%d",&rec_DS.debuff_type);
 
-                    if(rec.ds.debuff_type == 1){
+                    if(rec_DS.debuff_type == 1){
                         printf("공격력 감소량 입력 : ");
-                        scanf("%d", &rec.ds.attack_down_value);
+                        scanf("%d", &rec_DS.attack_down_value);
                     }
-                    if(rec.ds.debuff_type == 2){
+                    if(rec_DS.debuff_type == 2){
                         printf("방어력 감소량 입력 : ");
-                        scanf("%d", &rec.ds.defense_down_value);
+                        scanf("%d", &rec_DS.defense_down_value);
                     }
-                    if(rec.ds.debuff_type == 3){
+                    if(rec_DS.debuff_type == 3){
                         printf("감소량 입력\n공격력 방어력");
-                        if(scanf("%d %d", &rec.ds.attack_down_value, &rec.ds.defense_down_value) != 2) break;
+                        if(scanf("%d %d", &rec_DS.attack_down_value, &rec_DS.defense_down_value) != 2) break;
                     }
-                    if(rec.ds.debuff_type == 4){
+                    if(rec_DS.debuff_type == 4){
                         printf("스피드 감소량 입력 : ");
-                        scanf("%d", &rec.ds.speed_down_value);
+                        scanf("%d", &rec_DS.speed_down_value);
                     }
-                    if(rec.ds.debuff_type == 5){
+                    if(rec_DS.debuff_type == 5){
                         printf("감소량 입력\n공격력 스피드");
-                        if(scanf("%d %d", &rec.ds.attack_down_value, &rec.ds.speed_down_value) != 2) break;
+                        if(scanf("%d %d", &rec_DS.attack_down_value, &rec_DS.speed_down_value) != 2) break;
                     }
-                    if(rec.ds.debuff_type == 6){
+                    if(rec_DS.debuff_type == 6){
                         printf("감소량 입력\n방어력 스피드");
-                        if(scanf("%d %d", &rec.ds.defense_down_value, &rec.ds.speed_down_value) != 2) break;
+                        if(scanf("%d %d", &rec_DS.defense_down_value, &rec_DS.speed_down_value) != 2) break;
                     }
-                    if(rec.ds.debuff_type == 7){
+                    if(rec_DS.debuff_type == 7){
                         printf("감소량 입력\n공격력 방어력 스피드");
-                        if(scanf("%d %d", &rec.ds.attack_down_value, &rec.ds.defense_down_value, &rec.ds.speed_down_value) != 3) break;
+                        if(scanf("%d %d", &rec_DS.attack_down_value, &rec_DS.defense_down_value, &rec_DS.speed_down_value) != 3) break;
                     }
-                    fwrite(&rec, rec_size, 1, fp);
+
+                    fwrite(&rec_DS, sizeof(rec_DS), 1, fp);
                 }
 
-                if(rec.skill_type == 3)
-                {
+
+                else if(SID % 100 == 3){
+                    printf("스킬 ID : %6d 이름 : %4s 종류 : %4s\n", rec_HS.SID, rec_HS.skill_name, "힐");
+
+                    printf("새로운 이름 입력 : ");
+                    scanf("%s", &rec_HS.skill_name);
+
+
                     printf("\n힐 스킬\n");
-                    printf("현재 힐량 : %3s\n", rec.hs.heal_value);
-                    printf("새로운 힐량 입력 : ");
-                    scanf("%d %s",&rec.hs.heal_value);
-                    fwrite(&rec, rec_size, 1, fp);
-                }
+                    printf("현재 힐량 : %3s\n", rec_HS.heal_value);
 
+                    printf("새로운 힐량 입력 : ");
+                    scanf("%d %s",&rec_HS.heal_value);
+
+                    fwrite(&rec_HS, sizeof(rec_HS), 1, fp);
+                }
             }
             
             else printf("레코드 %d 없음\n", SID);
