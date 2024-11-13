@@ -23,17 +23,20 @@ int main(int argc, char* argv[])
 
 	do{
 		printf("%3s %3s %3s\n", "몬스터ID", "이름", "속성");
-		if(scanf("%d %s %s", &rec.MID, &rec.monster_name, &rec.property) != 3) break;
+		if(scanf("%d %s %s", &rec.mid, &rec.monster_name, &rec.property) != 3) break;
 
-		rec.stats.level = 1;
-		rec.stats.experience = 0;
+		rec.stats.level = 1;			//경험치 초기화
+		rec.stats.exp = 0;
 		printf("%3s %3s %3s %3s\n", "HP", "공격력", "방어력", "속도");
-		if(scanf("%d %d %d %d",&rec.stats.HP, &rec.stats.attackPower, &rec.stats.defensePower, &rec.stats.speed) != 4) break;
+		if(scanf("%d %d %d %d",&rec.stats.HP, &rec.stats.attackPower, &rec.stats.defensePower, &rec.stats.speed) != 4) break;	//스탯 입력
 		
 		printf("첫 스킬 ID\n");
-		if(scanf("%d", &rec.skills.skill_1_ID) != 1) break;
+		if(scanf("%d", &rec.skills.skill_1_ID) != 1) break;		//첫 스킬 입력
+		rec.skills.skill_2_ID = -1;								//초기화
+		rec.skills.skill_3_ID = -1;								//초기화
+		rec.skills.skill_4_ID = -1;								//초기화
 		
-		fseek(fp, (rec.MID * sizeof(rec)), SEEK_SET);
+		fseek(fp, (rec.mid * sizeof(rec)), SEEK_SET);
 		fwrite(&rec, sizeof(rec), 1, fp);
 		
 		printf("계속하겠습니까? (Y/N)");

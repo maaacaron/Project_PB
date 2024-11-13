@@ -1,11 +1,7 @@
 
-createSkill: createSkill.o
-	gcc -o createSkill createSkill.o
-updateSkill: updateSkill.o
-	gcc -o updateSkill updateSkill.o
-createSkill.o: createSkill.c skill.h
-	gcc -c createSkill.c
-updateSkill.o: updateSkill.c skill.h
-	gcc -c updateSkill.c
+createEvent: createEvent.o
+	gcc -o createEvent createEvent.o
+createEvent.o: createEvent.c event.h
+	gcc -c createEvent.c
 clear:
-	rm -rf createMoster createMonster.o
+	rm -rf createEvent createEvent.o

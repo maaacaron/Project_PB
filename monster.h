@@ -1,6 +1,6 @@
 struct stat{
 	int level;
-	int experience;
+	int exp;
 	int HP;
 	int attackPower;
 	int defensePower;
@@ -15,7 +15,7 @@ struct monsterSkill{
 };
 
 struct monster{
-	int MID;
+	int mid;
 	char monster_name[50];
 	char property[50];
 	struct stat stats;

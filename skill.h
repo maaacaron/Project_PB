@@ -12,7 +12,7 @@
 
 struct attackSkill
 {
-    int SID;
+    int sid;
     char skill_name[50];
     int skill_damage;
     char property[50];
@@ -20,7 +20,7 @@ struct attackSkill
 
 struct buffSkill
 {
-    int SID;
+    int sid;
     char skill_name[50];
     int buff_type;
     
@@ -31,7 +31,7 @@ struct buffSkill
 
 struct debuffSkill
 {
-    int SID;
+    int sid;
     char skill_name[50];
     int debuff_type;
 
@@ -42,7 +42,7 @@ struct debuffSkill
 
 struct healSkill
 {
-    int SID;
+    int sid;
     char skill_name[50];
     int heal_value;
 };
