@@ -4,18 +4,22 @@
 #define START_EID 0
 
 
-void scan_event(FILE* fp, struct event rec)
+int scan_event(FILE* fp)
 {
+    struct event rec;
     int choice_num;
 
     printf("이벤트 ID : ");
     scanf("%d", &rec.event_id);
+
     //이벤트 스토리 불러와서 rec.story에 저장
     
+
+
     printf("선택지 개수 입력 : ");
     scanf("%d", &choice_num);
 
-    for(int i = 1; i <= choice_num; i++)
+    for(int i = 1; i <= choice_num; i++)        //선택지 및 보상 입력
     {
         if(i == 1)
         {
@@ -23,8 +27,8 @@ void scan_event(FILE* fp, struct event rec)
             scanf("%s", &rec.select_1.choice);
             printf("선택지 %d 보상 입력\n", i);
             printf("exp  HP  공격력  방어력  속도  스킬id(얻는 스킬이 없는 경우 -1)");
-            scanf("%d %d %d %d %d %d", &rec.select_1.prices.exp, &rec.select_1.prices.HP, &rec.select_1.prices.AP, 
-                                        &rec.select_1.prices.DP, &rec.select_1.prices.SP, &rec.select_1.prices.skill);
+            if(scanf("%d %d %d %d %d %d", &rec.select_1.prices.exp, &rec.select_1.prices.HP, &rec.select_1.prices.AP, 
+                                        &rec.select_1.prices.DP, &rec.select_1.prices.SP, &rec.select_1.prices.skill) != 6) return 0;
         }
 
         else if(i == 2)
@@ -33,8 +37,8 @@ void scan_event(FILE* fp, struct event rec)
             scanf("%s", &rec.select_2.choice);
             printf("선택지 %d 보상 입력\n", i);
             printf("exp  HP  공격력  방어력  속도  스킬id(얻는 스킬이 없는 경우 -1)");
-            scanf("%d %d %d %d %d %d", &rec.select_2.prices.exp, &rec.select_2.prices.HP, &rec.select_2.prices.AP, 
-                                        &rec.select_2.prices.DP, &rec.select_2.prices.SP, &rec.select_2.prices.skill);
+            if(scanf("%d %d %d %d %d %d", &rec.select_2.prices.exp, &rec.select_2.prices.HP, &rec.select_2.prices.AP, 
+                                        &rec.select_2.prices.DP, &rec.select_2.prices.SP, &rec.select_2.prices.skill) != 6) return 0;
         }
         
         else if(i == 3)
@@ -43,8 +47,8 @@ void scan_event(FILE* fp, struct event rec)
             scanf("%s", &rec.select_3.choice);
             printf("선택지 %d 보상 입력\n", i);
             printf("exp  HP  공격력  방어력  속도  스킬id(얻는 스킬이 없는 경우 -1)");
-            scanf("%d %d %d %d %d %d", &rec.select_3.prices.exp, &rec.select_3.prices.HP, &rec.select_3.prices.AP, 
-                                        &rec.select_3.prices.DP, &rec.select_3.prices.SP, &rec.select_3.prices.skill);
+            if(scanf("%d %d %d %d %d %d", &rec.select_3.prices.exp, &rec.select_3.prices.HP, &rec.select_3.prices.AP, 
+                                        &rec.select_3.prices.DP, &rec.select_3.prices.SP, &rec.select_3.prices.skill) != 6) return 0;
         }
 
         else if(i == 4)
@@ -53,8 +57,8 @@ void scan_event(FILE* fp, struct event rec)
             scanf("%s", &rec.select_4.choice);
             printf("선택지 %d 보상 입력\n", i);
             printf("exp  HP  공격력  방어력  속도  스킬id(얻는 스킬이 없는 경우 -1)");
-            scanf("%d %d %d %d %d %d", &rec.select_4.prices.exp, &rec.select_4.prices.HP, &rec.select_4.prices.AP, 
-                                        &rec.select_4.prices.DP, &rec.select_4.prices.SP, &rec.select_4.prices.skill);
+            if(scanf("%d %d %d %d %d %d", &rec.select_4.prices.exp, &rec.select_4.prices.HP, &rec.select_4.prices.AP, 
+                                        &rec.select_4.prices.DP, &rec.select_4.prices.SP, &rec.select_4.prices.skill) != 6) return 0;
         }
 
         else if(i == 5)
@@ -63,17 +67,18 @@ void scan_event(FILE* fp, struct event rec)
             scanf("%s", &rec.select_5.choice);
             printf("선택지 %d 보상 입력\n", i);
             printf("exp  HP  공격력  방어력  속도  스킬id(얻는 스킬이 없는 경우 -1)");
-            scanf("%d %d %d %d %d %d", &rec.select_5.prices.exp, &rec.select_5.prices.HP, &rec.select_5.prices.AP, 
-                                        &rec.select_5.prices.DP, &rec.select_5.prices.SP, &rec.select_5.prices.skill);
+            if(scanf("%d %d %d %d %d %d", &rec.select_5.prices.exp, &rec.select_5.prices.HP, &rec.select_5.prices.AP, 
+                                        &rec.select_5.prices.DP, &rec.select_5.prices.SP, &rec.select_5.prices.skill) != 6) return 0;
         }
     }
     fseek(fp, rec.event_id * sizeof(rec), SEEK_SET);
     fwrite(&rec, sizeof(rec), 1, fp);
+
+    return 1;
 }
 
 int main(int argc, char *argv[])
 {
-    struct event rec;
     char c;
 
     FILE *fp;
@@ -89,7 +94,7 @@ int main(int argc, char *argv[])
 
 
     do{
-        scan_event(fp, rec);
+        if(scan_event(fp) == 0) break;
         
         printf("계속하겠습니까? (Y/N)");
 		scanf(" %c", &c);
