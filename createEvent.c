@@ -7,7 +7,6 @@
 int scan_event(FILE* fp)
 {
     struct event rec;
-    int choice_num;
 
     printf("이벤트 ID : ");
     scanf("%d", &rec.event_id);
@@ -17,9 +16,9 @@ int scan_event(FILE* fp)
 
 
     printf("선택지 개수 입력 : ");
-    scanf("%d", &choice_num);
+    scanf("%d", &rec.choice_num);
 
-    for(int i = 1; i <= choice_num; i++)        //선택지 및 보상 입력
+    for(int i = 1; i <= rec.choice_num; i++)        //선택지 및 보상 입력
     {
         if(i == 1)
         {
@@ -82,14 +81,10 @@ int main(int argc, char *argv[])
     char c;
 
     FILE *fp;
-    if (argc != 2) {
-        fprintf(stderr, "사용법: %s 파일이름\n", argv[0]);
-        exit(1);
-    }
 
-    if ((fp = fopen(argv[1], "wb")) == NULL ) {
+    if ((fp = fopen("eventDex", "wb")) == NULL ) {
         fprintf(stderr, "파일 열기 오류\n");
-        exit(2);
+        exit(1);
     }
 
 

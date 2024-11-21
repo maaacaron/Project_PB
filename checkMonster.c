@@ -2,28 +2,26 @@
 #include <stdlib.h>
 #include "monster.h"
 
-int check_monster(FILE* fp)
+struct monster check_monster(int mid, FILE* fp)
 {
     struct monster rec;
-    int mid;
 
-    printf("검색할 몬스터의 MID 입력: ");
-    if (scanf("%d", &mid) == 1) {
-        fseek(fp, mid *sizeof(rec),  SEEK_SET);
-        if (fread(&rec,  sizeof(rec),  1,  fp) > 0) 
-        {
-            printf("몬스터ID : %d  이름 : %s  속성 : %s  레벨 : %s\n", rec.mid, rec.monster_name, rec.property, rec.stats.exp);
-            printf("HP : %d  공격력 : %d  방어력 : %d  속도 : %d\n",rec.stats.HP, rec.stats.attackPower, rec.stats.defensePower, rec.stats.speed);
-        }
-        else printf("레코드 %d 없음\n", mid);
+    fseek(fp, mid *sizeof(rec),  SEEK_SET);
+    if (fread(&rec,  sizeof(rec),  1,  fp) > 0) 
+    {
+        printf("몬스터ID : %d  이름 : %s  속성 : %s  레벨 : %s\n", rec.mid, rec.monster_name, rec.property, rec.stats.exp);
+        printf("HP : %d  공격력 : %d  방어력 : %d  속도 : %d\n",rec.stats.HP, rec.stats.attackPower, rec.stats.defensePower, rec.stats.speed);
+        return rec;
     }
-    else printf("입력 오류");
+    else printf("레코드 %d 없음\n", mid);
+    
 }
 
 
 int main(int argc, char *argv[])
 {
     char c;
+    int mid;
     FILE *fp;
 
     if (argc != 2) {
@@ -38,9 +36,10 @@ int main(int argc, char *argv[])
 
 
     do 
-    {
-        check_monster(fp);
-
+    {    
+        printf("검색할 몬스터의 MID 입력: ");
+        if (scanf("%d", &mid) == 1) check_monster(mid, fp);
+        else printf("입력 오류");
         printf("계속하겠습니까?(Y/N)");
         scanf(" %c", &c);
     } while (c == 'Y');

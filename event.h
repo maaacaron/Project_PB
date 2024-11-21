@@ -1,5 +1,6 @@
 #define MAX_STORY_LENGTH 10000
 #define MAX_SELECT_LENGTH 500
+#define MAX_NORMALEVENT_NUM 20
 
 struct price
 {
@@ -21,6 +22,7 @@ struct select
 struct event
 {
     int event_id;
+    int choice_num;
     char story[MAX_STORY_LENGTH];
 
     struct select select_1;
