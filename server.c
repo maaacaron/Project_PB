@@ -18,7 +18,7 @@ int main()                          //마지막 플레이어까지 접속하여 
 
     int accessCount = 0;
 
-    key = ftok("keyIsServerRunning_1", 1);
+    key = ftok("/home/g_202111097/teamProject/keyServerShm_1", 1);
     shmid = shmget(key, 1, IPC_CREAT|0644);
     if(shmid == -1)
     {
@@ -29,7 +29,7 @@ int main()                          //마지막 플레이어까지 접속하여 
     shmaddr = (char*)shmat(shmid, NULL, 0);
 
 
-    while(accessCount == 4)
+    while(accessCount < 4)
     {
         if(shmaddr->flag == 1)          //다른 프로세스에서 공유메모리에 값을 넣었으면
         {

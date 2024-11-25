@@ -177,11 +177,7 @@ int main(int argc, char* argv[])
     char c;
 	FILE *fp;
 
-	if(argc != 2){
-		fprintf(stderr, "사용법: %s 파일이름\n", argv[0]);
-		exit(1);
-	}
-	fp = fopen(argv[1], "wb");
+	fp = fopen("skillDex", "wb");
 
     do{
         if(create_skill(fp) == 0) break;

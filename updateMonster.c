@@ -103,14 +103,8 @@ int main(int argc, char *argv[])
 	char c;
 	FILE *fp;
 	struct monster rec;
-
-	if (argc != 2)
-	{
-		fprintf(stderr, "사용법 : %s 파일이름\n", argv[0]);
-		exit(1);
-	}
 	
-	if ((fp = fopen(argv[1], "rb+")) == NULL)
+	if ((fp = fopen("monsterDex", "rb+")) == NULL)
 	{
 		fprintf(stderr, "파일 열기 오류\n");
 		exit(2);
