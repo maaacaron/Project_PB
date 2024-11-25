@@ -6,7 +6,7 @@
 #include "player.h"
 
 
-
+//플레이어 입력
 int scan_playerID()
 {
     int PID;
@@ -53,4 +53,13 @@ int main()
             break;
         }
     }
+
+    pid = fork();
+    if (pid == 0)
+    {
+        printf("자식프로세스에서 main.c 실행");
+        execl("./main", "main", NULL);
+    }
+
+
 }
