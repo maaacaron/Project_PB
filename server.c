@@ -28,7 +28,7 @@ int main()                          //마지막 플레이어까지 접속하여 
 
     shmaddr = (char*)shmat(shmid, NULL, 0);
 
-
+    //플레이어 정보 입력
     while(accessCount < 4)
     {
         if(shmaddr->flag == 1)          //다른 프로세스에서 공유메모리에 값을 넣었으면
