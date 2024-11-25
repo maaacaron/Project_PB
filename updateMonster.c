@@ -4,7 +4,7 @@
 
 void updateMonster(FILE* fp, struct monster rec)
 {
-	// 블록 읽어오는 위치 설정하여 알맞은 ID의 포켓몬 정보 읽어오고 데이터 업데이트하는 함수
+	// 블록 읽어오는 위치 설정하여 알맞은 ID의 포켓몬 정보 읽어오고 데이터 업데이트하는 함수 
 	fseek(fp, rec.mid * sizeof(rec), SEEK_SET);
 	fwrite(&rec, sizeof(rec), 1, fp);
 }

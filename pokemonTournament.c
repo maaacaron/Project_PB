@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include "player.h"
 
-//플레이어 입력
+//플레이어 입력 
 int scan_playerID()
 {
     int PID;

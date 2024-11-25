@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include "player.h"
 
-int main()                          //마지막 플레이어까지 접속하여 정보를 받아올 때까지 무한반복하며 대기
+int main()                          //마지막 플레이어까지 접속하여 정보를 받아올 때까지 무한반복하며 대기 
 {
     struct player* shmaddr;
     key_t key;

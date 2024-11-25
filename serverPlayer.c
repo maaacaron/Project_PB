@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 
 
-void make_twoway_pipe()         //파이프 이름 겹치지 않도록 A조와 B조 구분 필요
+void make_twoway_pipe()         //파이프 이름 겹치지 않도록 A조와 B조 구분 필요 
 {
     unlink("./battlefifo1");
     unlink("./battlefifo2");

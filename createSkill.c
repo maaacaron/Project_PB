@@ -3,7 +3,7 @@
 #include "skill.h"
 #define START_SID 0
 
-// 스킬을 생성하는 코드
+// 스킬을 생성하는 코드 
 
 int create_attackSkill(FILE* fp, struct attackSkill rec_AS)
 {

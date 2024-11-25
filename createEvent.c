@@ -3,7 +3,7 @@
 #include "event.h"
 #define START_EID 0
 
-// 이벤트 생성하는 코드
+// 이벤트 생성하는 코드 
 int scan_event(FILE* fp)
 {
     struct event rec;

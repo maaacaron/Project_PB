@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "skill.h"
 
-// 스킬 수정하는 코드
+// 스킬 수정하는 코드 
 int update_attackSkill(FILE* fp, struct attackSkill rec_AS)
 {
     printf("현재 스킬 ID : %6d 이름 : %4s 종류 : %4s\n", rec_AS.sid, rec_AS.skill_name, "공격");

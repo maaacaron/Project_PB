@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "skill.h" // 스킬 종류 구조체 저장된 헤더파일
+#include "skill.h" // 스킬 종류 구조체 저장된 헤더파일 
 
 void check_attackSkill(FILE* fp, struct attackSkill rec_AS)
 {

@@ -5,7 +5,7 @@
 
 #define ATTACK 1
 #define DEFENSE 2
-#define SPEED 4         //2개 이상의 버프(디버프)를 조합하는 경우 { if buff_type == 6  |  DEFENSE + SPEED }
+#define SPEED 4         //2개 이상의 버프(디버프)를 조합하는 경우 { if buff_type == 6  |  DEFENSE + SPEED } 
 
 #define ATTACKSKILL 0
 #define BUFFSKILL 1

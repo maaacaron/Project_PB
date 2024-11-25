@@ -3,7 +3,7 @@
 #include "event.h"
 #define TOTAL_GROWING_DATE 4
 
-// 성장 씬 함수
+// 성장 씬 함수 
 
 void init_price(struct price p)     //보상 스탯 초기화
 {

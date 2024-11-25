@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include "monster.h"
 
-char* make_shared_memory()          //공유 메모리 생성 및 연결
+char* make_shared_memory()          //공유 메모리 생성 및 연결 
 {
     int shmid;
     key_t key;

@@ -2,7 +2,7 @@
 #define MAX_TEXT_LENGTH 500
 #define MAX_NORMALEVENT_NUM 20
 
-// ÀÌº¥Æ® Á¾·ù Çì´õÆÄÀÏ
+// ì´ë²¤íŠ¸ ì¢…ë¥˜ í—¤ë”íŒŒì¼ 
 struct price
 {
     int exp;

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "monster.h" // 몬스터 스텟 구조 저장 헤더파일
+#include "monster.h" // 몬스터 스텟 구조 저장 헤더파일 
 #define START_MID 0
 
 
