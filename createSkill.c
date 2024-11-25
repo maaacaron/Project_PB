@@ -3,17 +3,18 @@
 #include "skill.h"
 #define START_SID 0
 
-
+// 스킬을 생성하는 코드
 
 int create_attackSkill(FILE* fp, struct attackSkill rec_AS)
 {
+    // 공격 스킬 ID, 스킬 이름, 데미지, 속성을 입력받아 공격스킬 구조체에 저장
     printf("%3s %15s\n", "스킬ID", "스킬 이름");
     if(scanf("%d %s", &rec_AS.sid, &rec_AS.skill_name) != 2) return 0;
 
     printf("데미지  속성\n");
     if(scanf("%d %s", &rec_AS.skill_damage, &rec_AS.property) != 2) return 0;
 
-    fseek(fp, rec_AS.sid * sizeof(rec_AS), SEEK_SET);                       //위치 +(SID)(공격스킬 크기)
+    fseek(fp, rec_AS.sid * sizeof(rec_AS), SEEK_SET);   //위치 +(SID)(공격스킬 크기)
     fwrite(&rec_AS, sizeof(rec_AS), 1, fp);
 
     return 1;
@@ -21,6 +22,7 @@ int create_attackSkill(FILE* fp, struct attackSkill rec_AS)
 
 int create_buffSkill(FILE* fp, struct buffSkill rec_BS)
 {
+    // 버프 스킬 정보를 입력받아 버프스킬 구조체에 저장
     printf("스킬ID  스킬 이름\n");
     if(scanf("%d %s", &rec_BS.sid, &rec_BS.skill_name) != 2) return 0;
 
@@ -58,7 +60,7 @@ int create_buffSkill(FILE* fp, struct buffSkill rec_BS)
         if(scanf("%d %d %d", &rec_BS.attack_up_value, &rec_BS.defense_up_value, &rec_BS.speed_up_value) != 3) return 0;
     }
 
-    fseek(fp, (rec_BS.sid - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);        //위치 +(SID - 100)(버프스킬 크기)
+    fseek(fp, (rec_BS.sid - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);    //위치 +(SID - 100)(버프스킬 크기)
     fwrite(&rec_BS, sizeof(rec_BS), 1, fp);
 
     return 1;
@@ -66,6 +68,7 @@ int create_buffSkill(FILE* fp, struct buffSkill rec_BS)
 
 int create_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
 {
+    // 디버프스킬 정보를 입력받아 디버프스킬 구조체에 저장
     printf("스킬ID  스킬 이름\n");
         if(scanf("%d %s", &rec_DS.sid, &rec_DS.skill_name) != 2) return 0;
 
@@ -118,6 +121,7 @@ int create_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
 
 int create_healSkill(FILE* fp, struct healSkill rec_HS)
 {
+    // 힐스킬 정보를 입력받아 힐스킬 구조체에 저장
     printf("스킬ID  스킬 이름\n");
     if(scanf("%d %s", &rec_HS.sid, &rec_HS.skill_name) != 2) return 0;
 
@@ -132,6 +136,7 @@ int create_healSkill(FILE* fp, struct healSkill rec_HS)
 
 int create_skill(FILE* fp)
 {    
+    // 스킬종류를 입력받아 종류별 스킬 생성함수를 실행시켜주는 함수
     struct attackSkill rec_AS;
     struct buffSkill rec_BS;
     struct debuffSkill rec_DS;
@@ -179,6 +184,13 @@ int main(int argc, char* argv[])
 
 	fp = fopen("skillDex", "wb");
 
+    // 예외처리
+    if ((fp = fopen("skillDex", "rb")) == NULL) {
+        fprintf(stderr, "파일 열기 오류\n");
+        exit(2);
+    }
+
+    // 사용자로부터 N을 입력받을때 까지 스킬 생성 함수 계속 실행
     do{
         if(create_skill(fp) == 0) break;
 

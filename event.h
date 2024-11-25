@@ -2,6 +2,7 @@
 #define MAX_TEXT_LENGTH 500
 #define MAX_NORMALEVENT_NUM 20
 
+// 이벤트 종류 헤더파일
 struct price
 {
     int exp;

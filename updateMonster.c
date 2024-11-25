@@ -4,12 +4,14 @@
 
 void updateMonster(FILE* fp, struct monster rec)
 {
+	// 블록 읽어오는 위치 설정하여 알맞은 ID의 포켓몬 정보 읽어오고 데이터 업데이트하는 함수
 	fseek(fp, rec.mid * sizeof(rec), SEEK_SET);
 	fwrite(&rec, sizeof(rec), 1, fp);
 }
 
 void updateMonsterHP(FILE* fp, int mid, int HP)
 {
+	// HP값 인자로 받아 포켓몬 정보 수정
 	struct monster rec;
 
 	fseek(fp, mid * sizeof(rec), SEEK_SET);
@@ -23,6 +25,7 @@ void updateMonsterHP(FILE* fp, int mid, int HP)
 
 void updateMonsterStats(FILE* fp, int mid, int AP, int DP, int SP)
 {
+	// 스테이터스값 인자로 받아 포켓몬 정보 수정
 	struct monster rec;
 
 	fseek(fp, mid * sizeof(rec), SEEK_SET);
@@ -38,12 +41,13 @@ void updateMonsterStats(FILE* fp, int mid, int AP, int DP, int SP)
 
 void updateMonsterLV(FILE* fp, int mid, int exp)
 {
+	// 경험치 인자로 받아 포켓몬 정보 수정
 	struct monster rec;
 
 	fseek(fp, mid * sizeof(rec), SEEK_SET);
 	fread(&rec, sizeof(rec), 1, fp);
 
-	rec.stats.exp += exp;			//레벨과 필요 경험치량에 따라 레벨 오르는 정도 수정하면 될 듯
+	rec.stats.exp += exp;	//레벨과 필요 경험치량에 따라 레벨 오르는 정도 수정하면 될 듯
 
 	fseek(fp, -sizeof(rec), SEEK_CUR);
 	fwrite(&rec, sizeof(rec), 1, fp);
@@ -51,6 +55,7 @@ void updateMonsterLV(FILE* fp, int mid, int exp)
 
 int updateMonsterSkills(FILE* fp, int mid, int sid)
 {
+	// 스킬 아이디를 인자로 받아서 포켓몬 스킬 정보 수정
 	struct monster rec;
 
 	fseek(fp, mid * sizeof(rec), SEEK_SET);
@@ -70,6 +75,7 @@ int updateMonsterSkills(FILE* fp, int mid, int sid)
 
 int scanMonster(FILE* fp, struct monster rec)
 {
+	// 몬스터 데이터 수정
 	int mid;
 
 	printf("수정할 몬스터의 ID : ");
@@ -104,12 +110,14 @@ int main(int argc, char *argv[])
 	FILE *fp;
 	struct monster rec;
 	
+	// 예외처리
 	if ((fp = fopen("monsterDex", "rb+")) == NULL)
 	{
 		fprintf(stderr, "파일 열기 오류\n");
 		exit(2);
 	}
 	
+	// 몬스터 수정해주고 계속 업데이트
 	do {
 		if(scanMonster(fp, rec) == 1) updateMonster(fp, rec);
 

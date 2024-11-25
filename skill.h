@@ -13,6 +13,7 @@
 #define HEALSKILL 3
 
 
+// 스킬 종류별로 구조체 만듦
 struct attackSkill
 {
     int sid;
