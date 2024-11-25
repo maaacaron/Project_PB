@@ -1,5 +1,5 @@
 #define MAX_STORY_LENGTH 10000
-#define MAX_SELECT_LENGTH 500
+#define MAX_TEXT_LENGTH 500
 #define MAX_NORMALEVENT_NUM 20
 
 struct price
@@ -14,7 +14,8 @@ struct price
 
 struct select
 {
-    char choice[MAX_SELECT_LENGTH];
+    char choice[MAX_TEXT_LENGTH];
+    char result[MAX_TEXT_LENGTH];
     struct price prices;
 };
 
