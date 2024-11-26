@@ -72,6 +72,7 @@ void trigger_event(FILE* fp, int eid, struct price p)
     }
 
 
+    
     //공유메모리에 포켓몬 정보 업데이트
 }
 

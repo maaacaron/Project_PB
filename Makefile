@@ -1,7 +1,7 @@
 
-createEvent: createEvent.o
-	gcc -o createEvent createEvent.o
-createEvent.o: createEvent.c event.h
-	gcc -c createEvent.c
+checkMonster: checkMonster.o
+	gcc -o checkMonster checkMonster.o
+checkMonster.o: checkMonster.c monster.h
+	gcc -c checkMonster.c
 clear:
-	rm -rf createEvent createEvent.o
+	rm -rf checkMonster checkMonster.o
