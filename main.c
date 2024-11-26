@@ -75,6 +75,31 @@ int findMonsterByName(const char* name, struct monster* selectedMonster)
     return -1;
 }
 
+// 공유 메모리에 선택한 몬스터 저장
+void saveMonsterToSharedMemory(int playerID, struct monster* selectedMonster) {
+    key_t key = ftok("main", 10597);
+    int shmid = shmget(key, sizeof(struct player) * 4, IPC_CREAT | 0644);
+    if (shmid == -1) {
+        perror("shmget 실패");
+        exit(1);
+    }
+
+    struct player* shmaddr = (struct player*)shmat(shmid, NULL, 0);
+    if (shmaddr == (void*)-1) {
+        perror("shmat 실패");
+        exit(1);
+    }
+
+    // 선택한 몬스터 데이터를 공유 메모리에 저장
+    shmaddr[playerID].selectedMonster = *selectedMonster;
+    shmaddr[playerID].flag = 1; // 데이터 저장 완료 플래그
+    printf("플레이어 %d의 몬스터 데이터가 공유 메모리에 저장되었습니다.\n", playerID);
+
+    if (shmdt(shmaddr) == -1) {
+        perror("공유 메모리 분리 실패");
+        exit(1);
+    }
+}
 
 >>>>>>> Stashed changes
 void callGrowScene()
@@ -136,9 +161,8 @@ int main(int argc, char* argv[])
             selectedMonster.stats.HP, selectedMonster.stats.attackPower,
             selectedMonster.stats.defensePower, selectedMonster.stats.speed);
 
-        char* shmaddr = make_shared_memory();
-        strcpy(shmaddr, selectedMonster.monster_name); // 공유 메모리에 이름 저장
-        printf("포켓몬 이름 '%s'이(가) 공유 메모리에 저장되었습니다.\n", selectedMonster.monster_name);
+        // 공유 메모리에 몬스터 데이터 저장
+        saveMonsterToSharedMemory(receivedPlayerID, &selectedMonster);
     }
     else {
         printf("'%s' 포켓몬을 찾을 수 없습니다.\n", inputName);
