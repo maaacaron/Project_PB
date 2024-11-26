@@ -1,5 +1,8 @@
 // 몬스터 스텟 구조 저장 헤더파일 
 
+#ifndef MONSTER_H
+#define MONSTER_H
+
 struct stat
 {
 	int level;

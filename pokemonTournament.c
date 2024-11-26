@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/shm.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include "player.h"
 
@@ -49,7 +50,7 @@ int main()
             shmaddr->flag = 1;                  //서버에 값 넘겨주는 중 표시
             shmaddr->playerID = playerID;
             shmaddr->processID = getpid();
-            shmaddr->isMyTurn = 0
+            shmaddr->isMyTurn = 0;
             break;
         }
     }

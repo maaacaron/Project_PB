@@ -1,4 +1,10 @@
 // 플레이어 정보 구조체 
+
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include "monster.h"
+
 struct player
 {
     int flag;
