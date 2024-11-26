@@ -24,7 +24,7 @@ int main()
     struct player* shmaddr;
 
     key = ftok("keyServerShm_1", 1);
-    shmid = shmget(key, 1, IPC_CREAT|0644);
+    shmid = shmget(key, sizeof(struct player), IPC_CREAT | 0644);
     if(shmid == -1)
     {
         perror("shmget");
@@ -56,8 +56,11 @@ int main()
     pid = fork();
     if (pid == 0)
     {
+        char playerIDStr[10];
+
+
         printf("자식프로세스에서 main.c 실행");
-        execl("./main", "main", NULL);
+        execl("./main", "main", playerIDStr, NULL);
     }
 
 
