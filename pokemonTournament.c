@@ -54,11 +54,13 @@ int main()
         }
     }
 
+    char playerIDStr[10];
+
     pid = fork();
     if (pid == 0)
     {
         printf("자식프로세스에서 main.c 실행");
-        execl("./main", "main", NULL);
+        execl("./main", "main", playerIDStr, NULL);
     }
 
 

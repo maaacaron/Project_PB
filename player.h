@@ -5,5 +5,9 @@ struct player
     int playerID;
     int processID;
     int isServerRunning;
+<<<<<<< Updated upstream
     int isMyTurn;
+=======
+    struct monster selectedMonster;
+>>>>>>> Stashed changes
 };

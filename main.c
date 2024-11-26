@@ -6,6 +6,7 @@
 #include <sys/ipc.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "player.h"
 #include "monster.h"
 
 char* make_shared_memory()          //공유 메모리 생성 및 연결 
@@ -28,6 +29,54 @@ char* make_shared_memory()          //공유 메모리 생성 및 연결
     return shmaddr;
 }
 
+<<<<<<< Updated upstream
+=======
+void printMonsterNames()
+{
+    FILE* fp;
+    struct monster rec;
+
+    if ((fp = fopen("monsterDex", "rb")) == NULL)
+    {
+        perror("파일 열기 오류");
+        exit(1);
+    }
+    printf("포켓몬 이름 목록: \n");
+
+    while (fread(&rec, sizeof(struct monster), 1, fp) > 0)
+    {
+        printf("%s\n", rec.monster_name);
+    }
+
+    fclose(fp);
+}
+
+int findMonsterByName(const char* name, struct monster* selectedMonster)
+{
+    FILE* fp;
+    struct monster rec;
+
+    if ((fp = fopen("monsterDex", "rb")) == NULL)
+    {
+        perror("파일 열기 오류");
+        return -1;
+    }
+    while (fread(&rec, sizeof(struct monster), 1, fp) > 0)
+    {
+        if (strcmp(rec.monster_name, name) == 0)
+        {
+            *selectedMonster = rec;
+            fclose(fp);
+            return 0;
+        }
+    }
+
+    fclose(fp);
+    return -1;
+}
+
+
+>>>>>>> Stashed changes
 void callGrowScene()
 {
     int child, status, pid
@@ -62,10 +111,42 @@ void callBattleScene()
     }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+<<<<<<< Updated upstream
+=======
+    int receivedPlayerID = atoi(argv[1]);
+    struct monster selectedMonster;
+    char inputName[50];
+
+
+    printf("Player ID : %d\n", receivedPlayerID);
     //포켓몬 선택
     printf("포켓몬 선택 후 성장 씬으로 이동합니다./n");
+    printMonsterNames();
+
+    //포켓몬 선택
+    printf("선택할 포켓몬의 이름을 입력하세요 : ");
+    scanf("%s", inputName);
+
+    if (findMonsterByName(inputName, &selectedMonster) == 0) {
+        printf("선택된 포켓몬: %s\n", selectedMonster.monster_name);
+        printf("속성: %s\n", selectedMonster.property);
+        printf("HP: %d, 공격력: %d, 방어력: %d, 속도: %d\n",
+            selectedMonster.stats.HP, selectedMonster.stats.attackPower,
+            selectedMonster.stats.defensePower, selectedMonster.stats.speed);
+
+        char* shmaddr = make_shared_memory();
+        strcpy(shmaddr, selectedMonster.monster_name); // 공유 메모리에 이름 저장
+        printf("포켓몬 이름 '%s'이(가) 공유 메모리에 저장되었습니다.\n", selectedMonster.monster_name);
+    }
+    else {
+        printf("'%s' 포켓몬을 찾을 수 없습니다.\n", inputName);
+        return 1;
+    }
+
+>>>>>>> Stashed changes
+
 
     //포켓몬 선택이 끝났을 때
     printf("포켓몬 선택이 완료되었습니다./n");
