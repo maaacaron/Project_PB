@@ -29,50 +29,53 @@ char* make_shared_memory()          //공유 메모리 생성 및 연결
     return shmaddr;
 }
 
-<<<<<<< Updated upstream
-=======
-void printMonsterNames()
+int printMonsterNames(const char* filename)
 {
-    FILE* fp;
-    struct monster rec;
-
-    if ((fp = fopen("monsterDex", "rb")) == NULL)
+    FILE* fp = fopen(filename, "rb");
+    if (!fp)
     {
         perror("파일 열기 오류");
         exit(1);
     }
+    struct monster rec;
+
+    int index = 1;
+
     printf("포켓몬 이름 목록: \n");
 
     while (fread(&rec, sizeof(struct monster), 1, fp) > 0)
     {
-        printf("%s\n", rec.monster_name);
+        printf("%d. %s\n", index, rec.monster_name);
+        index++;
     }
 
     fclose(fp);
+    return index - 1;   //총 포켓몬 수 반환
 }
 
-int findMonsterByName(const char* name, struct monster* selectedMonster)
+int findMonsterByNumber(const char* filename, int number, struct monster* selectedMonster)
 {
-    FILE* fp;
-    struct monster rec;
-
-    if ((fp = fopen("monsterDex", "rb")) == NULL)
-    {
+    FILE* fp = fopen(filename, "rb");
+    if (!fp) {
         perror("파일 열기 오류");
         return -1;
     }
+    struct monster rec;
+    int currentIndex = 1; //번호 시작
+
+
     while (fread(&rec, sizeof(struct monster), 1, fp) > 0)
     {
-        if (strcmp(rec.monster_name, name) == 0)
-        {
+        if (currentIndex == number) {
             *selectedMonster = rec;
             fclose(fp);
-            return 0;
+            return 0; // 성공
         }
+        currentIndex++;
     }
 
     fclose(fp);
-    return -1;
+    return -1;  //실패
 }
 
 // 공유 메모리에 선택한 몬스터 저장
@@ -101,10 +104,10 @@ void saveMonsterToSharedMemory(int playerID, struct monster* selectedMonster) {
     }
 }
 
->>>>>>> Stashed changes
+
 void callGrowScene()
 {
-    int child, status, pid
+    int child, status, pid;
     pid = fork();
     if (pid == 0)
     {
@@ -115,7 +118,7 @@ void callGrowScene()
     else //부모 프로세스
     {
         child = wait(&status);
-        printf("자식프로세스 %d 종료. 성장씬이 종료되었습니다./n", child);
+        printf("자식프로세스 %d 종료. 성장씬이 종료되었습니다.\n", child);
     }
 }
 
@@ -132,29 +135,39 @@ void callBattleScene()
     else //부모 프로세스
     {
         child = wait(&status);
-        printf("자식프로세스 %d 종료. 배틀씬이 종료되었습니다. 수고하셨습니다./n", child);
+        printf("자식프로세스 %d 종료. 배틀씬이 종료되었습니다. 수고하셨습니다.\n", child);
     }
 }
 
 int main(int argc, char* argv[])
 {
-<<<<<<< Updated upstream
-=======
+
     int receivedPlayerID = atoi(argv[1]);
     struct monster selectedMonster;
-    char inputName[50];
+
+    int choice;
+    const char* filename = "monsterDex";
 
 
     printf("Player ID : %d\n", receivedPlayerID);
     //포켓몬 선택
-    printf("포켓몬 선택 후 성장 씬으로 이동합니다./n");
-    printMonsterNames();
+    printf("포켓몬 선택 후 성장 씬으로 이동합니다.\n");
+    int totalMonsters = printMonsterNames(filename);
+    if (totalMonsters == 0) {
+        printf("포켓몬 목록을 불러올 수 없습니다.\n");
+        return 1;
+    }
 
     //포켓몬 선택
-    printf("선택할 포켓몬의 이름을 입력하세요 : ");
-    scanf("%s", inputName);
+    printf("선택할 포켓몬의 번호를 입력하세요 (1-%d): ", totalMonsters);
+    scanf("%d", &choice);
 
-    if (findMonsterByName(inputName, &selectedMonster) == 0) {
+    if (choice < 1 || choice > totalMonsters) {
+        printf("잘못된 번호입니다.\n");
+        return 1;
+    }
+
+    if (findMonsterByNumber(filename, choice, &selectedMonster) == 0) {
         printf("선택된 포켓몬: %s\n", selectedMonster.monster_name);
         printf("속성: %s\n", selectedMonster.property);
         printf("HP: %d, 공격력: %d, 방어력: %d, 속도: %d\n",
@@ -165,11 +178,11 @@ int main(int argc, char* argv[])
         saveMonsterToSharedMemory(receivedPlayerID, &selectedMonster);
     }
     else {
-        printf("'%s' 포켓몬을 찾을 수 없습니다.\n", inputName);
+        printf("포켓몬을 찾을 수 없습니다.\n");
         return 1;
     }
 
->>>>>>> Stashed changes
+
 
 
     //포켓몬 선택이 끝났을 때

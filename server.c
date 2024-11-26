@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <sys/shm.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "player.h"
+#include "monster.h"
 
 int main()                          //마지막 플레이어까지 접속하여 정보를 받아올 때까지 무한반복하며 대기 
 {
@@ -18,13 +20,14 @@ int main()                          //마지막 플레이어까지 접속하여 
 
     int accessCount = 0;
 
-    key = ftok("/home/g_202111097/teamProject/keyServerShm_1", 1);
+    key = ftok("main", 1);
     shmid = shmget(key, sizeof(struct player) * 4, IPC_CREAT | 0644);   //플레이어별 메모리 크기 설정
     if(shmid == -1)
     {
         perror("shmget");
         exit(1);
     }
+
 
     shmaddr = (struct player*)shmat(shmid, NULL, 0);
 

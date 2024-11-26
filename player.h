@@ -7,13 +7,13 @@
 
 struct player
 {
-    int flag;
+    int flag;       //상태 플래그 (데이터 저장 여부)
     int playerID;
     int processID;
-    int isServerRunning;
-<<<<<<< Updated upstream
+    int isServerRunning;    //서버 실행 여부
     int isMyTurn;
-=======
+    int initailized;        //초기화 완료 여부
     struct monster selectedMonster;
->>>>>>> Stashed changes
 };
+
+#endif

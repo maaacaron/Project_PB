@@ -3,7 +3,7 @@
 #ifndef MONSTER_H
 #define MONSTER_H
 
-struct stat
+struct monsterStats
 {
 	int level;
 	int exp;
@@ -26,6 +26,8 @@ struct monster
 	int mid;
 	char monster_name[50];
 	char property[50];
-	struct stat stats;
+	struct monsterStats stats;
 	struct monsterSkill skills;
 };	
+
+#endif
