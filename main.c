@@ -28,29 +28,9 @@ char* make_shared_memory()          //공유 메모리 생성 및 연결
     return shmaddr;
 }
 
-void printMonsterNames()
-{
-    FILE* fp;
-    struct monster rec;
-
-    if ((fp = fopen("monsterDex", "rb")) == NULL)
-    {
-        perror("파일 열기 오류");
-        exit(1);
-    }
-    printf("포켓몬 이름 목록: \n");
-
-    while (fread(&rec, sizeof(struct monster), 1, fp) > 0)
-    {
-        printf("%s\n", rec.monster_name);
-    }
-
-    fclose(fp);
-}
-
 void callGrowScene()
 {
-    int child, status, pid;
+    int child, status, pid
     pid = fork();
     if (pid == 0)
     {
@@ -61,7 +41,7 @@ void callGrowScene()
     else //부모 프로세스
     {
         child = wait(&status);
-        printf("자식프로세스 %d 종료. 성장씬이 종료되었습니다.\n", child);
+        printf("자식프로세스 %d 종료. 성장씬이 종료되었습니다./n", child);
     }
 }
 
@@ -78,29 +58,22 @@ void callBattleScene()
     else //부모 프로세스
     {
         child = wait(&status);
-        printf("자식프로세스 %d 종료. 배틀씬이 종료되었습니다. 수고하셨습니다.\n", child);
+        printf("자식프로세스 %d 종료. 배틀씬이 종료되었습니다. 수고하셨습니다./n", child);
     }
 }
 
-int main(int argc, char *argv[])
+int main()
 {
-    int receivedPlayerID = atoi(argv[1]);
-    printf("Player ID : %d\n", receivedPlayerID);
-
-    printMonsterNames();
-
-
-
     //포켓몬 선택
-    printf("포켓몬 선택 후 성장 씬으로 이동합니다.\n");
-    
+    printf("포켓몬 선택 후 성장 씬으로 이동합니다./n");
+
     //포켓몬 선택이 끝났을 때
-    printf("포켓몬 선택이 완료되었습니다.\n");
+    printf("포켓몬 선택이 완료되었습니다./n");
 
     //성장씬으로
     callGrowScene();
 
-    printf("배틀 씬으로 이동합니다.\n");
+    printf("배틀 씬으로 이동합니다./n");
 
     //배틀씬으로
     callBattleScene();
@@ -108,7 +81,7 @@ int main(int argc, char *argv[])
     //두번째 성장씬으로
     callGrowScene();
 
-    printf("마지막 배틀!\n");
+    printf("마지막 배틀!/n");
     callBattleScene();
 
     printf("게임 종료");

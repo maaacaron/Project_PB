@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 	char c;
 	FILE *fp;
 
-	if((fp = fopen("monsterDex", "ab")) == NULL)
+	if((fp = fopen("monsterDex", "wb")) == NULL)
 		// monsterDex이진파일 불러오기
 	{
     	fprintf(stderr, "파일 열기 오류\n");

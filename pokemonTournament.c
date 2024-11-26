@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/shm.h>
 #include <sys/types.h>
 #include "player.h"
@@ -25,7 +24,7 @@ int main()
     struct player* shmaddr;
 
     key = ftok("keyServerShm_1", 1);
-    shmid = shmget(key, sizeof(struct player), IPC_CREAT | 0644);
+    shmid = shmget(key, 1, IPC_CREAT|0644);
     if(shmid == -1)
     {
         perror("shmget");
@@ -50,6 +49,7 @@ int main()
             shmaddr->flag = 1;                  //서버에 값 넘겨주는 중 표시
             shmaddr->playerID = playerID;
             shmaddr->processID = getpid();
+            shmaddr->isMyTurn = 0
             break;
         }
     }
@@ -57,11 +57,8 @@ int main()
     pid = fork();
     if (pid == 0)
     {
-        char playerIDStr[10];
-
-
         printf("자식프로세스에서 main.c 실행");
-        execl("./main", "main", playerIDStr, NULL);
+        execl("./main", "main", NULL);
     }
 
 

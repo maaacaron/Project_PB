@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 
     FILE *fp;
 
-    if ((fp = fopen("eventDex", "ab")) == NULL ) {
+    if ((fp = fopen("eventDex", "wb")) == NULL ) {
         fprintf(stderr, "파일 열기 오류\n");
         exit(1);
     }

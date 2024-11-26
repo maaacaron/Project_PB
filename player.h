@@ -5,4 +5,5 @@ struct player
     int playerID;
     int processID;
     int isServerRunning;
+    int isMyTurn;
 };

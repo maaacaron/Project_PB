@@ -14,7 +14,7 @@ struct monster check_monster(int mid, FILE* fp)
     if (fread(&rec,  sizeof(rec),  1,  fp) > 0)
     {
         // 포켓몬 정보 출력
-        printf("몬스터ID : %d  이름 : %s  속성 : %s  레벨 : %d\n", rec.mid, rec.monster_name, rec.property, rec.stats.level);
+        printf("몬스터ID : %d  이름 : %s  속성 : %s  레벨 : %s\n", rec.mid, rec.monster_name, rec.property, rec.stats.exp);
         printf("HP : %d  공격력 : %d  방어력 : %d  속도 : %d\n",rec.stats.HP, rec.stats.attackPower, rec.stats.defensePower, rec.stats.speed);
         return rec;
     }

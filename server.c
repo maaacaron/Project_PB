@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <sys/shm.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -27,7 +26,7 @@ int main()                          //마지막 플레이어까지 접속하여 
         exit(1);
     }
 
-    shmaddr = (struct player*)shmat(shmid, NULL, 0);
+    shmaddr = (char*)shmat(shmid, NULL, 0);
 
     //플레이어 정보 입력
     while(accessCount < 4)
