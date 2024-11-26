@@ -28,12 +28,12 @@ char* make_shared_memory()          //공유 메모리 생성 및 연결
     return shmaddr;
 }
 
-void printMonsterNames(const char* filename)
+void printMonsterNames()
 {
     FILE* fp;
     struct monster rec;
 
-    if ((fp = fopen(filename, "rb")) == NULL)
+    if ((fp = fopen("monsterDex", "rb")) == NULL)
     {
         perror("파일 열기 오류");
         exit(1);
@@ -50,7 +50,7 @@ void printMonsterNames(const char* filename)
 
 void callGrowScene()
 {
-    int child, status, pid
+    int child, status, pid;
     pid = fork();
     if (pid == 0)
     {
@@ -87,9 +87,7 @@ int main(int argc, char *argv[])
     int receivedPlayerID = atoi(argv[1]);
     printf("Player ID : %d\n", receivedPlayerID);
 
-    const char* filename = "monsterDex";    //바이너리 파일 이름
-
-    printMonsterNames(filename);
+    printMonsterNames();
 
 
 

@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
     char c;
 	FILE *fp;
 
-	fp = fopen("skillDex", "wb");
+	fp = fopen("skillDex", "ab");
 
     // 예외처리
     if ((fp = fopen("skillDex", "rb")) == NULL) {
