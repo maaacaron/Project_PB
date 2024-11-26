@@ -1,5 +1,5 @@
 #define MAX_STORY_LENGTH 10000
-#define MAX_TEXT_LENGTH 500
+#define MAX_TEXT_LENGTH 1000
 #define MAX_NORMALEVENT_NUM 20
 
 // 이벤트 종류 헤더파일 
