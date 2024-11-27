@@ -4,6 +4,7 @@
 #include <sys/shm.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include "player.h"
 
 //플레이어 입력 
@@ -111,6 +112,7 @@ int main()
     printf("서버와 공유 메모리 설정 완료.\n");
 
     char playerIDStr[10];
+	int status;
     // playerID를 문자열로 변환
     sprintf(playerIDStr, "%d", playerID);
 
@@ -118,8 +120,12 @@ int main()
     if (pid == 0)
     {
         printf("자식프로세스에서 main.c 실행");
-        execl("./main", "main", playerIDStr, NULL);
-    }
-
+		execl("./main", "main", playerIDStr, NULL);
+	}
+	else //pokemonTournament가 종료되면, 자식 프로세스에서 입력 안 됨
+	{
+		int status;
+		wait(&status);
+	}
 
 }
