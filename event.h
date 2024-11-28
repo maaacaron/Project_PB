@@ -5,7 +5,6 @@
 // 이벤트 종류 헤더파일 
 struct price
 {
-    int exp;
     int HP;
     int AP;
     int DP;
