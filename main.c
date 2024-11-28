@@ -105,13 +105,16 @@ void saveMonsterToSharedMemory(int playerID, struct monster* selectedMonster) {
 }
 
 
-void callGrowScene()
+void callGrowScene(int playerID)
 {
     int child, status, pid;
     pid = fork();
     if (pid == 0)
     {
-        execl("./growScene", "growScene", NULL); //성장 씬 실행
+        char playerIDStr[10];
+        sprintf(playerIDStr, "%d", playerID);
+
+        execl("./growScene", "growScene", playerIDStr,NULL); //성장 씬 실행
         perror("execl 실패");
         exit(1);
     }
@@ -128,7 +131,10 @@ void callBattleScene()
     pid = fork();
     if (pid == 0)
     {
-        execl("./battleScene.c", "battleScene", NULL);
+        char playerIDStr[10];
+        sprintf(playerIDStr, "%d", playerID);
+
+        execl("./battleScene.c", "battleScene", playerIDStr, NULL);
         perror("execl 실패");
         exit(1);
     }
@@ -189,18 +195,18 @@ int main(int argc, char* argv[])
     printf("포켓몬 선택이 완료되었습니다./n");
 
     //성장씬으로
-    callGrowScene();
+    callGrowScene(receivedPlayerID);
 
     printf("배틀 씬으로 이동합니다./n");
 
     //배틀씬으로
-    callBattleScene();
+    callBattleScene(receivedPlayerID);
 
     //두번째 성장씬으로
-    callGrowScene();
+    callGrowScene(receivedPlayerID);
 
     printf("마지막 배틀!/n");
-    callBattleScene();
+    callBattleScene(receivedPlayerID);
 
     printf("게임 종료");
     return 0;
