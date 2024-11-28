@@ -1,31 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
 #include "event.h"
+#include "player.h"
 #define TOTAL_GROWING_DATE 4
 
 // 성장 씬 함수 
+struct player *shmaddr;
 
-void init_price(struct price p)     //보상 스탯 초기화
+void add_skill(int playerID, struct price add)
 {
-    p.AP = 0;
-    p.DP = 0;
-    p.exp = 0;
-    p.HP = 0;
-    p.skill = 0;
-    p.SP = 0;
+    struct monsterSkill *rec = &shmaddr[playerID].selectedMonster.skills;
+    if (rec->skill_2_ID = -1) rec->skill_2_ID = add.skill;
+    else if (rec->skill_3_ID = -1) rec->skill_3_ID = add.skill;
+    else if (rec->skill_4_ID = -1) rec->skill_4_ID = add.skill;
 }
 
-void add_price(struct price rec, struct price add)      //보상 추가
+void add_price(int playerID, struct price add)      //보상 추가
 {
-    rec.AP += add.AP;
-    rec.DP += add.DP;
-    rec.exp += add.exp;
-    rec.HP += add.HP;
-    rec.skill += add.skill;
-    rec.SP += add.SP;
+    if(add.skill != -1)
+    {
+        add_skill(playerID, add);
+        return;
+    }
+    struct monsterStats *rec = &shmaddr[playerID].selectedMonster.stats;
+    rec->attackPower += add.AP;
+    rec->defensePower += add.DP;
+    rec->HP += add.HP;
+    rec->speed += add.SP;
 }
 
-void trigger_event(FILE* fp, int eid, struct price p)       
+void trigger_event(FILE* fp, int playerID, int eid)       
 {
     struct event rec;
     int selected;
@@ -48,36 +54,49 @@ void trigger_event(FILE* fp, int eid, struct price p)
     if(selected == 1) 
     {
         printf("%s\n", rec.select_1.result);
-        add_price(p, rec.select_1.prices);
+        add_price(playerID, rec.select_1.prices);
     }
     else if(selected == 2) 
     {
         printf("%s\n", rec.select_2.result);
-        add_price(p, rec.select_2.prices);
+        add_price(playerID, rec.select_2.prices);
     }
     else if(selected == 3)
     {
         printf("%s\n", rec.select_3.result);
-        add_price(p, rec.select_3.prices);
+        add_price(playerID, rec.select_3.prices);
     }
     else if(selected == 4)
     {
         printf("%s\n", rec.select_1.result);
-        add_price(p, rec.select_4.prices);
+        add_price(playerID, rec.select_4.prices);
     }
     else if(selected == 5)
     {
         printf("%s\n", rec.select_1.result);
-        add_price(p, rec.select_5.prices);
+        add_price(playerID, rec.select_5.prices);
     }
-
-
-    //공유메모리에 포켓몬 정보 업데이트
 }
 
-int main()
+void* make_shared_memory()          //공유 메모리 생성 및 연결 
 {
-    struct price prices;
+    int shmid;
+    key_t key;
+
+    key = ftok("main", 10597);
+    shmid = shmget(key, sizeof(struct player) * 4, 0);
+    if(shmid == -1)
+    {
+        perror("shmget");
+        exit(1);
+    }
+
+    printf("shmid : %d", shmid);
+    shmaddr = (struct player*)shmat(shmid, NULL, 0);
+}
+
+int main(int argc, int argv[1])
+{
     int eid[TOTAL_GROWING_DATE];
     int specialEventCount = 0;
     
@@ -88,9 +107,7 @@ int main()
         exit(1);
     }
 
-    init_price(prices);
-
-    //공유메모리 연결
+    make_shared_memory();
 
     for(int i = 0; i < TOTAL_GROWING_DATE; i++)
     {
@@ -103,7 +120,7 @@ int main()
             }
         }
         
-        trigger_event(fp, eid[i], prices);
+        trigger_event(fp, argv[1], eid[i]);
     }
 
 
