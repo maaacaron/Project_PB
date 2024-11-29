@@ -35,11 +35,10 @@ int main()
 
     while (fgets(line, sizeof(line), fpt) != NULL)
     {
-        if(strcmp(line, "\n") == 0)
+        if(strcmp(line, "\r\n") == 0)
         {
             if(eid != -1)
             {
-                printf("eid : %d", eid);
                 rec.event_id = eid;
                 rec.choice_num = (lineCount - 2) / 3;
                 insertBinary(rec, fpb);
@@ -174,6 +173,7 @@ int main()
             count = 0;
             lineCount++;
         }
+        memset(line, 0, sizeof(line));
     }
     return 0;
 }

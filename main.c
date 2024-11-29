@@ -114,7 +114,7 @@ void callGrowScene(int playerID)
         char playerIDStr[10];
         sprintf(playerIDStr, "%d", playerID);
 
-        execl("./growScene", "growScene", playerIDStr,NULL); //성장 씬 실행
+        execl("./growScene", "growScene", playerIDStr, NULL); //성장 씬 실행
         perror("execl 실패");
         exit(1);
     }
@@ -125,7 +125,7 @@ void callGrowScene(int playerID)
     }
 }
 
-void callBattleScene()
+void callBattleScene(int playerID)
 {
     int child, status, pid;
     pid = fork();
