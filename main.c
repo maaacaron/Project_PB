@@ -13,11 +13,11 @@ char* make_shared_memory()          //공유 메모리 생성 및 연결
 {
     int shmid;
     key_t key;
-    char *shmaddr;
+    char* shmaddr;
 
     key = ftok("main", 10597);
-    shmid = shmget(key, 1024, IPC_CREAT|0644);
-    if(shmid == -1)
+    shmid = shmget(key, 1024, IPC_CREAT | 0644);
+    if (shmid == -1)
     {
         perror("shmget");
         exit(1);
@@ -114,7 +114,7 @@ void callGrowScene(int playerID)
         char playerIDStr[10];
         sprintf(playerIDStr, "%d", playerID);
 
-        execl("./growScene", "growScene", playerIDStr,NULL); //성장 씬 실행
+        execl("./growScene", "growScene", playerIDStr, NULL); //성장 씬 실행
         perror("execl 실패");
         exit(1);
     }
@@ -154,7 +154,7 @@ void callBattleScene(int playerID)
         char playerIDStr[10];
         sprintf(playerIDStr, "%d", playerID);
 
-        execl("./battleScene.c", "battleScene", playerIDStr, NULL);
+        execl("./BattleManager", "./BattleManager", playerIDStr, NULL);
         perror("execl 실패");
         exit(1);
     }
@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
 
     printf("게임 종료");
     return 0;
-    
+
     //성장씬으로 넘어감 growScene 호출 fork()한뒤 자식 프로세스 끝날때까지 wait
     //배틀씬 호출 fork() 자식 프로세스 끝날때까지 wait
     //승자 패자 구분하는 거 구현해 승자만 남겨두고 패자는 exit 승자만 다시 fork한뒤 성장씬 그리고 다시 돌아와 마지막 배틀씬
