@@ -95,10 +95,11 @@ void* make_shared_memory()          //공유 메모리 생성 및 연결
     shmaddr = (struct player*)shmat(shmid, NULL, 0);
 }
 
-int main(int argc, int argv[1])
+int main(int argc, char* argv[])
 {
     int eid[TOTAL_GROWING_DATE];
     int specialEventCount = 0;
+    int receivedPlayerID = atoi(argv[1]);
     
     FILE* fp;
 
@@ -107,7 +108,7 @@ int main(int argc, int argv[1])
         exit(1);
     }
 
-    make_shared_memory();
+     ();
 
     for(int i = 0; i < TOTAL_GROWING_DATE; i++)
     {
@@ -120,7 +121,7 @@ int main(int argc, int argv[1])
             }
         }
         
-        trigger_event(fp, argv[1], eid[i]);
+        trigger_event(fp, receivedPlayerID, eid[i]);
     }
 
 
