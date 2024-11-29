@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-     ();
+     make_shared_memory();
 
     for(int i = 0; i < TOTAL_GROWING_DATE; i++)
     {
