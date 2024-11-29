@@ -40,7 +40,7 @@ int main()
             if(eid != -1)
             {
                 rec.event_id = eid;
-                rec.choice_num = (lineCount - 2) / 3;
+                rec.choice_num = (lineCount - 1) / 3;
                 insertBinary(rec, fpb);
 
                 lineCount = 0;

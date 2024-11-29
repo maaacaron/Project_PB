@@ -113,6 +113,7 @@ int main(int argc, char* argv[])
     for(int i = 0; i < TOTAL_GROWING_DATE; i++)
     {
         eid[i] = rand() % MAX_NORMALEVENT_NUM;
+        /*
         for(int j = 0; j < i; j++)
         {
             if(eid[i] == eid[j]) 
@@ -120,6 +121,7 @@ int main(int argc, char* argv[])
                 if(specialEventCount < 4) eid[i] = MAX_NORMALEVENT_NUM + ++specialEventCount;      //같은 이벤트가 나오면 스페셜 이벤트로 전환(최대 7회)
             }
         }
+        */
         
         trigger_event(fp, receivedPlayerID, eid[i]);
     }
