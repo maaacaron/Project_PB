@@ -31,6 +31,10 @@ void checkMyMonster(int receivedPlayerID)
         shmaddr[receivedPlayerID].selectedMonster.stats.HP, shmaddr[receivedPlayerID].selectedMonster.stats.attackPower,
         shmaddr[receivedPlayerID].selectedMonster.stats.defensePower, shmaddr[receivedPlayerID].selectedMonster.stats.speed);
     printf("스킬\n");
+    printf("%d\n", shmaddr[receivedPlayerID].selectedMonster.skills.skill_1_ID);
+    printf("%d\n", shmaddr[receivedPlayerID].selectedMonster.skills.skill_2_ID);
+    printf("%d\n", shmaddr[receivedPlayerID].selectedMonster.skills.skill_3_ID);
+    printf("%d\n", shmaddr[receivedPlayerID].selectedMonster.skills.skill_4_ID);
 }
 
 
