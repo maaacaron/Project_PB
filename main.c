@@ -114,7 +114,7 @@ void callGrowScene(int playerID)
         char playerIDStr[10];
         sprintf(playerIDStr, "%d", playerID);
 
-        execl("./growScene", "growScene", playerIDStr, NULL); //성장 씬 실행
+        execl("./growScene", "growScene", playerIDStr,NULL); //성장 씬 실행
         perror("execl 실패");
         exit(1);
     }
@@ -122,6 +122,26 @@ void callGrowScene(int playerID)
     {
         child = wait(&status);
         printf("자식프로세스 %d 종료. 성장씬이 종료되었습니다.\n", child);
+    }
+}
+
+void checkMyMonsterScene(int playerID)
+{
+    int child, status, pid;
+    pid = fork();
+    if (pid == 0)
+    {
+        char playerIDStr[10];
+        sprintf(playerIDStr, "%d", playerID);
+
+        execl("./checkMyMonsterScene", "checkMyMonsterScene", playerIDStr, NULL);
+        perror("execl 실패");
+        exit(1);
+    }
+    else //부모 프로세스
+    {
+        child = wait(&status);
+        printf("자식프로세스 %d 종료. 몬스터 확인 완료.\n", child);
     }
 }
 
@@ -193,6 +213,8 @@ int main(int argc, char* argv[])
 
     //포켓몬 선택이 끝났을 때
     printf("포켓몬 선택이 완료되었습니다./n");
+
+    checkMyMonsterScene(receivedPlayerID);
 
     //성장씬으로
     callGrowScene(receivedPlayerID);
