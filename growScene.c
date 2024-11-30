@@ -26,7 +26,6 @@ void add_price(int playerID, struct price add)      //보상 추가
     if(add.skill != -1)
     {
         add_skill(playerID, add);
-        return;
     }
     struct monsterStats *rec = &shmaddr[playerID].selectedMonster.stats;
     rec->attackPower += add.AP;
