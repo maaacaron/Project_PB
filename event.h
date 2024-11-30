@@ -1,6 +1,8 @@
-#define MAX_STORY_LENGTH 100
-#define MAX_TEXT_LENGTH 100
-#define MAX_NORMALEVENT_NUM 5
+#define MAX_STORY_LENGTH 1000
+#define MAX_TEXT_LENGTH 1000
+#define MAX_NORMALEVENT_NUM 8
+#define MAX_SPECIALEVENT_NUM 3
+#define SKILL_EVENT_NUM 3
 
 // 이벤트 종류 헤더파일 
 struct price

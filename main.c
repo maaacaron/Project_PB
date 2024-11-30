@@ -212,14 +212,14 @@ int main(int argc, char* argv[])
 
 
     //포켓몬 선택이 끝났을 때
-    printf("포켓몬 선택이 완료되었습니다./n");
+    printf("포켓몬 선택이 완료되었습니다.\n");
 
     checkMyMonsterScene(receivedPlayerID);
 
     //성장씬으로
     callGrowScene(receivedPlayerID);
 
-    printf("배틀 씬으로 이동합니다./n");
+    printf("배틀 씬으로 이동합니다.\n");
 
     //배틀씬으로
     callBattleScene(receivedPlayerID);

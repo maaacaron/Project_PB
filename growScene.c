@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include <sys/shm.h>
 #include <sys/ipc.h>
 #include "event.h"
@@ -31,13 +33,138 @@ void add_price(int playerID, struct price add)      //보상 추가
     rec->speed += add.SP;
 }
 
-void trigger_event(FILE* fp, int playerID, int eid)       
+struct event scan_event(FILE* fp, int target_eid)
 {
     struct event rec;
+
+    int eid = 0;
+
+    char* prices;
+    int n[5];
+    int count = 0;
+    int lineCount = 0;
+    char line[MAX_STORY_LENGTH];
+
+    fseek(fp, 0, SEEK_SET);
+    while (fgets(line, sizeof(line), fp) != NULL)
+    {
+        if(eid != target_eid)
+        {
+            if(strcmp(line, "\r\n") == 0 || strcmp(line, "\n") == 0) eid++;
+            lineCount = 0;
+            continue;
+        }
+
+        if(eid == target_eid)
+        {
+            if(strcmp(line, "\r\n") == 0 || strcmp(line, "\n") == 0)
+            {
+                rec.choice_num = (lineCount - 1) / 3;
+                return rec;
+            }
+            if(lineCount == 0)
+            {
+                rec.event_id = eid;
+                strcpy(rec.story, line);
+            }
+            else if(lineCount == 1) strcpy(rec.select_1.choice, line);
+            else if(lineCount == 2) strcpy(rec.select_1.result, line);
+            else if(lineCount == 3)
+            {
+                prices = strtok(line, " ");
+                while(prices != NULL)
+                {
+                    n[count++] = atoi(prices);
+                    prices = strtok(NULL, " ");
+                }
+                rec.select_1.prices.HP = n[0];
+                rec.select_1.prices.AP = n[1];
+                rec.select_1.prices.DP = n[2];
+                rec.select_1.prices.SP = n[3];
+                rec.select_1.prices.skill = n[4];
+            }
+
+            else if(lineCount == 4) strcpy(rec.select_2.choice, line);
+            else if(lineCount == 5) strcpy(rec.select_2.result, line);
+            else if(lineCount == 6)
+            {
+                prices = strtok(line, " ");
+                while(prices != NULL)
+                {
+                    n[count++] = atoi(prices);
+                    prices = strtok(NULL, " ");
+                }
+                rec.select_2.prices.HP = n[0];
+                rec.select_2.prices.AP = n[1];
+                rec.select_2.prices.DP = n[2];
+                rec.select_2.prices.SP = n[3];
+                rec.select_2.prices.skill = n[4];
+            }
+
+            else if(lineCount == 7) strcpy(rec.select_3.choice, line);
+            else if(lineCount == 8) strcpy(rec.select_3.result, line);
+            else if(lineCount == 9)
+            {
+                prices = strtok(line, " ");
+                while(prices != NULL)
+                {
+                    n[count++] = atoi(prices);
+                    prices = strtok(NULL, " ");
+                }
+                rec.select_3.prices.HP = n[0];
+                rec.select_3.prices.AP = n[1];
+                rec.select_3.prices.DP = n[2];
+                rec.select_3.prices.SP = n[3];
+                rec.select_3.prices.skill = n[4];
+            }
+
+            else if(lineCount == 10) strcpy(rec.select_4.choice, line);
+            else if(lineCount == 11) strcpy(rec.select_4.result, line);
+            else if(lineCount == 12)
+            {
+                prices = strtok(line, " ");
+                while(prices != NULL)
+                {
+                    n[count++] = atoi(prices);
+                    prices = strtok(NULL, " ");
+                }
+                rec.select_4.prices.HP = n[0];
+                rec.select_4.prices.AP = n[1];
+                rec.select_4.prices.DP = n[2];
+                rec.select_4.prices.SP = n[3];
+                rec.select_4.prices.skill = n[4];
+            }
+            
+            else if(lineCount == 13) strcpy(rec.select_5.choice, line);
+            else if(lineCount == 14) strcpy(rec.select_5.result, line);
+            else if(lineCount == 15)
+            {
+                prices = strtok(line, " ");
+                while(prices != NULL)
+                {
+                    n[count++] = atoi(prices);
+                    prices = strtok(NULL, " ");
+                }
+                rec.select_5.prices.HP = n[0];
+                rec.select_5.prices.AP = n[1];
+                rec.select_5.prices.DP = n[2];
+                rec.select_5.prices.SP = n[3];
+                rec.select_5.prices.skill = n[4];
+            }
+
+            count = 0;
+            lineCount++;
+
+        }
+        memset(line, 0, sizeof(line));
+    }
+}
+
+void trigger_event(FILE* fp, int playerID, int eid)       
+{
+    struct event rec = scan_event(fp, eid);
     int selected;
 
-    fseek(fp, eid * sizeof(rec), SEEK_SET);
-    fread(&rec, sizeof(rec),  1,  fp);
     printf("%s\n", rec.story);
 
     for(int i = 0; i < rec.choice_num; i++)
@@ -90,8 +217,7 @@ void* make_shared_memory()          //공유 메모리 생성 및 연결
         perror("shmget");
         exit(1);
     }
-
-    printf("shmid : %d", shmid);
+    
     shmaddr = (struct player*)shmat(shmid, NULL, 0);
 }
 
@@ -100,10 +226,11 @@ int main(int argc, char* argv[])
     int eid[TOTAL_GROWING_DATE];
     int specialEventCount = 0;
     int receivedPlayerID = atoi(argv[1]);
+    int choice;
     
     FILE* fp;
 
-    if ((fp = fopen("eventDex", "rb")) == NULL ) {
+    if ((fp = fopen("eventDex.txt", "r")) == NULL ) {
         fprintf(stderr, "파일 열기 오류\n");
         exit(1);
     }
@@ -112,19 +239,24 @@ int main(int argc, char* argv[])
 
     for(int i = 0; i < TOTAL_GROWING_DATE; i++)
     {
+        srand((unsigned int) time(NULL));
         eid[i] = rand() % MAX_NORMALEVENT_NUM;
-        /*
+        printf("eid : %d\n", eid[i]);
         for(int j = 0; j < i; j++)
         {
             if(eid[i] == eid[j]) 
             {
-                if(specialEventCount < 4) eid[i] = MAX_NORMALEVENT_NUM + ++specialEventCount;      //같은 이벤트가 나오면 스페셜 이벤트로 전환(최대 7회)
+                if(specialEventCount < MAX_SPECIALEVENT_NUM) eid[i] = MAX_NORMALEVENT_NUM + ++specialEventCount;      //같은 이벤트가 나오면 스페셜 이벤트로 전환(최대 3회)
             }
         }
-        */
         
         trigger_event(fp, receivedPlayerID, eid[i]);
+        printf("다음날로 이동하기 : 1  /  내 포켓몬 확인하기 : 2\n");
+        scanf("%d", &choice);
+        if(choice == 2)
+        {
+            //포켓몬 확인씬 출력
+        }
+        while(getchar() != '\n');
     }
-
-
 }
