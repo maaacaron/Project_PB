@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <time.h>
 #include <sys/shm.h>
 #include <sys/ipc.h>
+#include <sys/wait.h>
 #include "event.h"
 #include "player.h"
 #define TOTAL_GROWING_DATE 4
@@ -221,6 +223,25 @@ void* make_shared_memory()          //공유 메모리 생성 및 연결
     shmaddr = (struct player*)shmat(shmid, NULL, 0);
 }
 
+void checkMyMonsterScene(int playerID)
+{
+    int child, status, pid;
+    pid = fork();
+    if (pid == 0)
+    {
+        char playerIDStr[10];
+        sprintf(playerIDStr, "%d", playerID);
+
+        execl("./checkMyMonsterScene", "checkMyMonsterScene", playerIDStr, NULL);
+        perror("execl 실패");
+        exit(1);
+    }
+    else //부모 프로세스
+    {
+        child = wait(&status);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     int eid[TOTAL_GROWING_DATE];
@@ -255,7 +276,7 @@ int main(int argc, char* argv[])
         scanf("%d", &choice);
         if(choice == 2)
         {
-            //포켓몬 확인씬 출력
+            checkMyMonsterScene(receivedPlayerID);
         }
         while(getchar() != '\n');
     }

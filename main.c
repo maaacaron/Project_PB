@@ -79,20 +79,8 @@ int findMonsterByNumber(const char* filename, int number, struct monster* select
 }
 
 // 공유 메모리에 선택한 몬스터 저장
-void saveMonsterToSharedMemory(int playerID, struct monster* selectedMonster) {
-    key_t key = ftok("main", 10597);
-    int shmid = shmget(key, sizeof(struct player) * 4, IPC_CREAT | 0644);
-    if (shmid == -1) {
-        perror("shmget 실패");
-        exit(1);
-    }
-
-    struct player* shmaddr = (struct player*)shmat(shmid, NULL, 0);
-    if (shmaddr == (void*)-1) {
-        perror("shmat 실패");
-        exit(1);
-    }
-
+void saveMonsterToSharedMemory(int playerID, struct monster* selectedMonster, struct player* shmaddr) {
+   
     // 선택한 몬스터 데이터를 공유 메모리에 저장
     shmaddr[playerID].selectedMonster = *selectedMonster;
     shmaddr[playerID].flag = 1; // 데이터 저장 완료 플래그
@@ -141,7 +129,6 @@ void checkMyMonsterScene(int playerID)
     else //부모 프로세스
     {
         child = wait(&status);
-        printf("자식프로세스 %d 종료. 몬스터 확인 완료.\n", child);
     }
 }
 
@@ -174,6 +161,19 @@ int main(int argc, char* argv[])
     int choice;
     const char* filename = "monsterDex";
 
+    key_t key = ftok("main", 10597);
+    int shmid = shmget(key, sizeof(struct player) * 4, IPC_CREAT | 0644);
+    if (shmid == -1) {
+        perror("shmget 실패");
+        exit(1);
+    }
+
+    struct player* shmaddr = (struct player*)shmat(shmid, NULL, 0);
+    if (shmaddr == (void*)-1) {
+        perror("shmat 실패");
+        exit(1);
+    }
+
 
     printf("Player ID : %d\n", receivedPlayerID);
     //포켓몬 선택
@@ -201,7 +201,7 @@ int main(int argc, char* argv[])
             selectedMonster.stats.defensePower, selectedMonster.stats.speed);
 
         // 공유 메모리에 몬스터 데이터 저장
-        saveMonsterToSharedMemory(receivedPlayerID, &selectedMonster);
+        saveMonsterToSharedMemory(receivedPlayerID, &selectedMonster, shmaddr);
     }
     else {
         printf("포켓몬을 찾을 수 없습니다.\n");
@@ -223,6 +223,11 @@ int main(int argc, char* argv[])
 
     //배틀씬으로
     callBattleScene(receivedPlayerID);
+
+    if (shmaddr[receivedPlayerID].is_dead == 1) // 배틀씬 끝난 후 패배한 플레이어라면
+    {
+        exit(0);
+    }
 
     //두번째 성장씬으로
     callGrowScene(receivedPlayerID);

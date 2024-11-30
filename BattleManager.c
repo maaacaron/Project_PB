@@ -18,6 +18,9 @@ void Check_Loser(int playerID, struct player* shmp);
 int findPlayerIndexByID(struct player* shmp, int playerID);
 void Check_Winner(int playerID, int processID, struct player* shmp);
 void waitingPlayer_All_BattleEnd(struct player* shmp);
+void MakePipe(int fd[2]);
+void Write_to_Pipe(int fd[2], int winnerPlayerID);
+void Read_to_Pipe(int fd[2], int* winnerPlayerID);
 
 // 두 플레이어 간의 상호작용을 도와주는 배틀 메니저. (사실상 서버 역할임)
 int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
@@ -139,8 +142,6 @@ void Check_Loser(int processID, struct player* shmp)
 	{
 		printf("\n당신은 패배하였다. (프로그램 종료)\n");
 		shmdt(shmp);
-
-		exit(0); //execl(패배 이벤트씬)으로 바꿀 것.
 	}
 	return;
 }
@@ -149,6 +150,10 @@ void Check_Winner(int playerID, int processID, struct player* shmp)
 {
 	int count = 0;
 	// processID: who am i | shmp[~]: is_dead
+	int fd[2];
+	int pipePid;
+	int status;
+	int receivedWinnerID;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -164,8 +169,22 @@ void Check_Winner(int playerID, int processID, struct player* shmp)
 	{
 		printf("\n당신은 첫 경기에서 승리하였다. (메인 프로그램으로)\n");
 		shmdt(shmp);
+		MakePipe(fd);
 
-		execl("./main", "main", playerID, NULL); // 메인프로그램으로 다시 이동
+		if ((pipePid = fork()) == 0) // 나오는 지 보려고 4인에 껴논거
+		{
+			int winnerPlayerID = playerID;
+			printf("%d\n", winnerPlayerID);
+
+			Write_to_Pipe(fd, winnerPlayerID);
+		}
+		else
+		{
+			wait(&status); // 자식 프로세스에서 전달하는 결과 대기
+			Read_to_Pipe(fd, &receivedWinnerID);
+		}
+		exit(0);
+		//execl("./main", "main", playerID, NULL); // 메인프로그램으로 다시 이동
 	}
 
 	if (count == 1)
@@ -173,7 +192,22 @@ void Check_Winner(int playerID, int processID, struct player* shmp)
 		printf("\n당신은 최종 경기에서 승리하였다. (승리 이벤트씬으로)\n");
 		shmdt(shmp);
 
-		exit(0); //execl(승리 이벤트씬)으로 바꿀 것.
+		// 승리 이벤트씬은 pipe 써서 표준출력으로 할 것
+
+		MakePipe(fd);
+
+		if ((pipePid = fork()) == 0) // 나오는 지 보려고 4인에 껴논거
+		{
+			int winnerPlayerID = playerID;
+
+			Write_to_Pipe(fd, winnerPlayerID);
+		}
+		else
+		{
+			wait(&status); // 자식 프로세스에서 전달하는 결과 대기
+			Read_to_Pipe(fd, &receivedWinnerID);
+		}
+		exit(0);
 	}
 	return;
 }
@@ -228,4 +262,39 @@ void waitingPlayer_All_BattleEnd(struct player* shmp)
 	}
 
 	return;
+}
+
+void MakePipe(int fd[2])
+{
+	if (pipe(fd) == -1)
+	{
+		perror("pipe 생성 실패");
+		return;
+	}
+}
+
+void Write_to_Pipe(int fd[2], int winnerPlayerID) //자식에서 쓸 함수
+{
+	close(fd[0]);
+	write(fd[1], &winnerPlayerID, sizeof(int));
+	close(fd[1]);
+}
+
+void Read_to_Pipe(int fd[2], int* winnerPlayerID) //부모에서 쓸 함수
+{
+	close(fd[1]);
+	read(fd[0], winnerPlayerID, sizeof(int));
+	printf("=================================================================\n");
+	printf("\n");
+	printf("\n");
+	printf("\n");
+	printf("\n");
+	printf("최종 승리한 플레이어는 플레이어 %d입니다. 축하합니다!!\n", *winnerPlayerID);
+	printf("\n");
+	printf("\n");
+	printf("\n");
+	printf("\n");
+	printf("=================================================================\n");
+
+	close(fd[0]);
 }
