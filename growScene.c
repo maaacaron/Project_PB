@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include "event.h"
 #include "player.h"
-#define TOTAL_GROWING_DATE 3
+#define TOTAL_GROWING_DATE 4
 
 // 성장 씬 함수 
 struct player *shmaddr;
@@ -239,10 +239,7 @@ void checkMyMonsterScene(int playerID)
     else //부모 프로세스
     {
         child = wait(&status);
-<<<<<<< Updated upstream
-=======
         printf("자식프로세스 %d 종료. 몬스터 확인 완료.\n", child);
->>>>>>> Stashed changes
     }
 }
 
@@ -260,8 +257,14 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-     make_shared_memory();
+    make_shared_memory();
 
+    if(strcmp(argv[2], "skill") == 0)   //인수로 skill을 받아왔으면 스킬 이벤트 실행(3번째 스킬 얻는 이벤트)
+    {
+        eid[0] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 2;
+        trigger_event(fp, receivedPlayerID, eid[0]);
+        exit(1);
+    }
     for(int i = 0; i < TOTAL_GROWING_DATE; i++)
     {
         srand((unsigned int) time(NULL));
@@ -271,18 +274,14 @@ int main(int argc, char* argv[])
             if(eid[i] == eid[j])
             {
                 if(specialEventCount < MAX_SPECIALEVENT_NUM) eid[i] = MAX_NORMALEVENT_NUM + ++specialEventCount;      //같은 이벤트가 나오면 스페셜 이벤트로 전환(최대 3회)
+                break;
             }
         }
         
-        if(i == 2 || strcmp(argv[2], "skill") == 0)
+        if(i == 2)  //3일째 이벤트이면 스킬 이벤트(2, 4번째 스킬)
         {
-<<<<<<< Updated upstream
-            checkMyMonsterScene(receivedPlayerID);
-=======
             if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_2_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 1;
-            else if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_3_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 2;
-            else if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_4_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 3;
->>>>>>> Stashed changes
+            else eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 3;
         }
 
         trigger_event(fp, receivedPlayerID, eid[i]);
@@ -299,4 +298,3 @@ int main(int argc, char* argv[])
 
         while(getchar() != '\n');
     }
-}
