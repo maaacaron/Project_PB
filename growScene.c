@@ -283,7 +283,6 @@ int main(int argc, char* argv[])
             if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_2_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 1;
             else eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 3;
         }
-
         trigger_event(fp, receivedPlayerID, eid[i]);
 
         do
@@ -298,3 +297,4 @@ int main(int argc, char* argv[])
 
         while(getchar() != '\n');
     }
+}
