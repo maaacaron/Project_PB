@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include "event.h"
 #include "player.h"
-#define TOTAL_GROWING_DATE 4
+#define TOTAL_GROWING_DATE 3
 
 // 성장 씬 함수 
 struct player *shmaddr;
@@ -239,6 +239,10 @@ void checkMyMonsterScene(int playerID)
     else //부모 프로세스
     {
         child = wait(&status);
+<<<<<<< Updated upstream
+=======
+        printf("자식프로세스 %d 종료. 몬스터 확인 완료.\n", child);
+>>>>>>> Stashed changes
     }
 }
 
@@ -262,22 +266,37 @@ int main(int argc, char* argv[])
     {
         srand((unsigned int) time(NULL));
         eid[i] = rand() % MAX_NORMALEVENT_NUM;
-        printf("eid : %d\n", eid[i]);
         for(int j = 0; j < i; j++)
         {
-            if(eid[i] == eid[j]) 
+            if(eid[i] == eid[j])
             {
                 if(specialEventCount < MAX_SPECIALEVENT_NUM) eid[i] = MAX_NORMALEVENT_NUM + ++specialEventCount;      //같은 이벤트가 나오면 스페셜 이벤트로 전환(최대 3회)
             }
         }
         
-        trigger_event(fp, receivedPlayerID, eid[i]);
-        printf("다음날로 이동하기 : 1  /  내 포켓몬 확인하기 : 2\n");
-        scanf("%d", &choice);
-        if(choice == 2)
+        if(i == 2 || strcmp(argv[2], "skill") == 0)
         {
+<<<<<<< Updated upstream
             checkMyMonsterScene(receivedPlayerID);
+=======
+            if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_2_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 1;
+            else if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_3_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 2;
+            else if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_4_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 3;
+>>>>>>> Stashed changes
         }
+
+        trigger_event(fp, receivedPlayerID, eid[i]);
+
+        do
+        {
+            printf("다음날로 이동하기 : 1  /  내 포켓몬 확인하기 : 2\n");
+            scanf("%d", &choice);
+            if(choice == 2)
+            {
+                checkMyMonsterScene(receivedPlayerID);
+            }
+        } while(choice == 1);
+
         while(getchar() != '\n');
     }
 }
