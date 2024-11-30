@@ -102,7 +102,7 @@ void callGrowScene(int playerID)
         char playerIDStr[10];
         sprintf(playerIDStr, "%d", playerID);
 
-        execl("./growScene", "growScene", playerIDStr, NULL); //성장 씬 실행
+        execl("./growScene", "growScene", playerIDStr, "stat", NULL); //성장 씬 실행
         perror("execl 실패");
         exit(1);
     }
