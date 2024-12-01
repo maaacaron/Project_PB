@@ -76,10 +76,13 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClCompile Include="BattleManager.c" />
+    <ClCompile Include="Battle_Client_Skill.c" />
     <ClCompile Include="Battle_Client_UI.c" />
     <ClCompile Include="checkMonster.c" />
     <ClCompile Include="checkMyMonsterScene.c" />
+    <ClCompile Include="checkMySkill.c" />
     <ClCompile Include="checkSkill.c" />
+    <ClCompile Include="checkSkill_modified.c" />
     <ClCompile Include="createEvent.c" />
     <ClCompile Include="createMonster.c" />
     <ClCompile Include="createSkill.c" />

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "skill.h" // 스킬 종류 구조체 저장된 헤더파일 
 
-void check_attackSkill(FILE* fp, struct attackSkill rec_AS)
+void Run_attackSkill(FILE* fp, struct attackSkill rec_AS)
 {
     // 공격 스킬의 정보 출력
     if (fread(&rec_AS,  sizeof(rec_AS),  1,  fp) > 0) 
@@ -12,7 +12,7 @@ void check_attackSkill(FILE* fp, struct attackSkill rec_AS)
     }
 }
 
-void check_buffSkill(FILE* fp, struct buffSkill rec_BS)
+void Run_buffSkill(FILE* fp, struct buffSkill rec_BS)
 {
     printf("현 위치 : %ld\n", ftell(fp));
     // 버프 스킬의 정보 출력
@@ -61,7 +61,7 @@ void check_buffSkill(FILE* fp, struct buffSkill rec_BS)
     }
 }
 
-void check_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
+void Run_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
 {
     // 디버프 스킬의 정보 출력
     if (fread(&rec_DS,  sizeof(rec_DS),  1,  fp) > 0) 
@@ -109,7 +109,7 @@ void check_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
     }
 }
 
-void check_healSkill(FILE* fp, struct healSkill rec_HS)
+void Run_healSkill(FILE* fp, struct healSkill rec_HS)
 {
     // 힐 스킬의 정보 출력
     if (fread(&rec_HS,  sizeof(rec_HS),  1,  fp) > 0) 
@@ -119,7 +119,7 @@ void check_healSkill(FILE* fp, struct healSkill rec_HS)
 }
 
 
-void check_skill(FILE* fp, int sid) 
+void Ready_skill(FILE* fp, int sid) 
 {
     struct attackSkill rec_AS;
     struct buffSkill rec_BS;
@@ -131,7 +131,7 @@ void check_skill(FILE* fp, int sid)
         // sid가 0~99 범위에 있을 때, AS 영역의 데이터에 접근
         if (sid < 8) {  // 실제로 저장된 AS 항목이 8개이므로, sid가 0~7인 경우만 유효
             fseek(fp, sid * sizeof(rec_AS), SEEK_SET);
-            check_attackSkill(fp, rec_AS);
+            Run_attackSkill(fp, rec_AS);
         }
         else {
             printf("유효하지 않은 SID입니다. AS 범위 내에 SID가 없습니다.\n");
@@ -142,7 +142,7 @@ void check_skill(FILE* fp, int sid)
         if (sid - 100 < 3) {  // 실제로 저장된 BS 항목이 3개이므로, sid가 100~102인 경우만 유효
             fseek(fp, 8 * sizeof(rec_AS), SEEK_SET);  // AS 영역을 넘기기
             fseek(fp, (sid - 100) * sizeof(rec_BS), SEEK_CUR);  // BS 영역으로 이동
-            check_buffSkill(fp, rec_BS);
+            Run_buffSkill(fp, rec_BS);
         }
         else {
             printf("유효하지 않은 SID입니다. BS 범위 내에 SID가 없습니다.\n");
@@ -153,7 +153,7 @@ void check_skill(FILE* fp, int sid)
             fseek(fp, 8 * sizeof(rec_AS), SEEK_SET);  // AS 영역을 넘기기
             fseek(fp, 3 * sizeof(rec_BS), SEEK_CUR);  // BS 영역을 넘기기
             fseek(fp, (sid - 200) * sizeof(rec_DS), SEEK_CUR);  // DS 영역으로 이동
-            check_debuffSkill(fp, rec_DS);
+            Run_debuffSkill(fp, rec_DS);
         }
         else {
             printf("유효하지 않은 SID입니다. DS 범위 내에 SID가 없습니다.\n");
@@ -165,7 +165,7 @@ void check_skill(FILE* fp, int sid)
             fseek(fp, 3 * sizeof(rec_BS), SEEK_CUR);  // BS 영역을 넘기기
             fseek(fp, 2 * sizeof(rec_DS), SEEK_CUR);  // DS 영역을 넘기기
             fseek(fp, (sid - 300) * sizeof(rec_HS), SEEK_CUR);  // HS 영역으로 이동
-            check_healSkill(fp, rec_HS);
+            Run_healSkill(fp, rec_HS);
         }
         else {
             printf("유효하지 않은 SID입니다. HS 범위 내에 SID가 없습니다.\n");
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    check_skill(fp, sid);
+    Ready_skill(fp, sid);
 
     fclose(fp);
     exit(0);

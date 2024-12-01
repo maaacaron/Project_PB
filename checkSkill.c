@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "skill.h" // 스킬 종류 구조체 저장된 헤더파일 
 
-void check_attackSkill(FILE* fp, struct attackSkill rec_AS)
+void Run_attackSkill(FILE* fp, struct attackSkill rec_AS)
 {
     // 공격 스킬의 정보 출력
     if (fread(&rec_AS,  sizeof(rec_AS),  1,  fp) > 0) 
@@ -12,7 +12,7 @@ void check_attackSkill(FILE* fp, struct attackSkill rec_AS)
     }
 }
 
-void check_buffSkill(FILE* fp, struct buffSkill rec_BS)
+void Run_buffSkill(FILE* fp, struct buffSkill rec_BS)
 {
     // 버프 스킬의 정보 출력
     if (fread(&rec_BS,  sizeof(rec_BS),  1,  fp) > 0) 
@@ -60,7 +60,7 @@ void check_buffSkill(FILE* fp, struct buffSkill rec_BS)
     else perror("fread");
 }
 
-void check_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
+void Run_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
 {
     // 디버프 스킬의 정보 출력
     if (fread(&rec_DS,  sizeof(rec_DS),  1,  fp) > 0) 
@@ -108,7 +108,7 @@ void check_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
     else perror("fread");
 }
 
-void check_healSkill(FILE* fp, struct healSkill rec_HS)
+void Run_healSkill(FILE* fp, struct healSkill rec_HS)
 {
     // 힐 스킬의 정보 출력
     if (fread(&rec_HS,  sizeof(rec_HS),  1,  fp) > 0) 
@@ -118,7 +118,7 @@ void check_healSkill(FILE* fp, struct healSkill rec_HS)
 }
 
 
-void check_skill(FILE* fp)
+void Ready_skill(FILE* fp)
 {
     // 스킬 sid를 입력받아 해당 스킬 확인시켜주기
     struct attackSkill rec_AS;
@@ -135,7 +135,7 @@ void check_skill(FILE* fp)
         if(sid / 100 == ATTACKSKILL)
         {
             fseek(fp, sid * sizeof(rec_AS), SEEK_SET);
-            check_attackSkill(fp, rec_AS);
+            Run_attackSkill(fp, rec_AS);
         }
 
         fseek(fp, START_BUFFSKILL_ID * sizeof(rec_AS), SEEK_SET);     //위치 + 100(100)
@@ -143,7 +143,7 @@ void check_skill(FILE* fp)
         if(sid / 100 == BUFFSKILL)
         {
             fseek(fp, (sid - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);
-            check_buffSkill(fp, rec_BS);
+            Run_buffSkill(fp, rec_BS);
         }
 
         fseek(fp, (START_DEBUFFSKILL_ID - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);  //위치 + 100(200)
@@ -151,7 +151,7 @@ void check_skill(FILE* fp)
         if(sid / 100 == DEBUFFSKILL)  
         {
             fseek(fp, (sid - START_BUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);
-            check_debuffSkill(fp, rec_DS);
+            Run_debuffSkill(fp, rec_DS);
         }
 
         fseek(fp, (START_HEALSKILL_ID - START_DEBUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);  //위치 + 100(300)
@@ -159,7 +159,7 @@ void check_skill(FILE* fp)
         if(sid / 100 == HEALSKILL)
         {
             fseek(fp, (sid - START_DEBUFFSKILL_ID) * sizeof(rec_HS), SEEK_CUR);
-            check_healSkill(fp, rec_HS);
+            Run_healSkill(fp, rec_HS);
         }
     }
     // 예외처리
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
 
     // N을 입력받을때까지 스킬 체크 함수 돌기
     do {
-        check_skill(fp);
+        Ready_skill(fp);
 
         printf("계속하겠습니까?(Y/N)");
         scanf(" %c", &c);
