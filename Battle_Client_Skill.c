@@ -83,17 +83,17 @@ void player_turn_attack(struct player* shmp, int processID, int opponentID)
 			Print_Skill_name(shmp[processID].selectedMonster.skills.skill_1_ID);
 		}
 
-		else if (i == 1)
+		else if (i == 2)
 		{
 			Print_Skill_name(shmp[processID].selectedMonster.skills.skill_2_ID);
 		}
 
-		else if (i == 1)
+		else if (i == 3)
 		{
 			Print_Skill_name(shmp[processID].selectedMonster.skills.skill_3_ID);
 		}
 
-		else if (i == 1)
+		else if (i == 4)
 		{
 			Print_Skill_name(shmp[processID].selectedMonster.skills.skill_4_ID);
 		}
@@ -124,26 +124,22 @@ void player_turn_attack(struct player* shmp, int processID, int opponentID)
 		break;
 	}
 
-	// 공격
 	if (answer == 1)
 	{
 		Ready_skill(shmp, processID, opponentID, shmp[processID].selectedMonster.skills.skill_1_ID);
 	}
 
-	// 공격
-	else if (answer == 1)
+	else if (answer == 2)
 	{
 		Ready_skill(shmp, processID, opponentID, shmp[processID].selectedMonster.skills.skill_2_ID);
 	}
 
-	// 공격
-	else if (answer == 1)
+	else if (answer == 3)
 	{
 		Ready_skill(shmp, processID, opponentID, shmp[processID].selectedMonster.skills.skill_3_ID);
 	}
 
-	// 공격
-	else if (answer == 1)
+	else if (answer == 4)
 	{
 		Ready_skill(shmp, processID, opponentID, shmp[processID].selectedMonster.skills.skill_4_ID);
 	}
@@ -405,7 +401,7 @@ void Print_Skill_name(int sid) // 스킬 아이디를 입력받아 적절하게 
 	struct debuffSkill rec_DS;
 	struct healSkill rec_HS;
 
-	printf("\nDEBUG| SID: %d를 검색합니다.\n");
+	printf("\nDEBUG| SID: %d를 검색합니다.\n", sid);
 
 	// sid 값에 따라 해당 스킬 영역에 접근
 	if (sid >= 0 && sid < 100)
@@ -476,6 +472,7 @@ void Print_Skill_name(int sid) // 스킬 아이디를 입력받아 적절하게 
 	{
 		printf("유효하지 않은 SID입니다. 범위를 벗어났습니다.\n");
 	}
+	fclose(fp);
 	return;
 }
 
@@ -557,7 +554,7 @@ void Ready_skill(struct player* shmp, int processID, int opponentID, int sid) //
 	struct debuffSkill rec_DS;
 	struct healSkill rec_HS;
 
-	printf("\nDEBUG| SID: %d를 검색합니다.\n");
+	printf("\nDEBUG| SID: %d를 검색합니다.\n", sid);
 
 	// sid 값에 따라 해당 스킬 영역에 접근
 	if (sid >= 0 && sid < 100) 
@@ -628,6 +625,7 @@ void Ready_skill(struct player* shmp, int processID, int opponentID, int sid) //
 	{
 		printf("유효하지 않은 SID입니다. 범위를 벗어났습니다.\n");
 	}
+	fclose(fp);
 	return;
 }
 

@@ -211,7 +211,7 @@ void* make_shared_memory()          //공유 메모리 생성 및 연결
     int shmid;
     key_t key;
 
-    key = ftok("main", 10597);
+    key = ftok("main", 1);
     shmid = shmget(key, sizeof(struct player) * 4, 0);
     if(shmid == -1)
     {

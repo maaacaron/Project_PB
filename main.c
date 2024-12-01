@@ -15,7 +15,7 @@ char* make_shared_memory()          //공유 메모리 생성 및 연결
     key_t key;
     char* shmaddr;
 
-    key = ftok("main", 10597);
+    key = ftok("main", 1);
     shmid = shmget(key, 1024, IPC_CREAT | 0644);
     if (shmid == -1)
     {
@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
     int choice;
     const char* filename = "monsterDex";
 
-    key_t key = ftok("main", 10597);
+    key_t key = ftok("main", 1);
     int shmid = shmget(key, sizeof(struct player) * 4, IPC_CREAT | 0644);
     if (shmid == -1) {
         perror("shmget 실패");
