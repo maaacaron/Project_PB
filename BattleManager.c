@@ -257,7 +257,6 @@ void waitingPlayer_All_BattleEnd(struct player* shmp)
 			flag4 = 1;
 		}
 		
-		printf("p1: %d, p2: %d, p3: %d, p4: %d", flag1, flag2, flag3, flag4);
 		sleep(1);
 	}
 

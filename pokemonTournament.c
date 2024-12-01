@@ -103,7 +103,6 @@ int main()
             }
             shmaddr->flag = 1;                  // 서버에 값 전달 중 표시
             shmaddr->playerID = playerID;       // 입력된 플레이어 ID 저장
-            shmaddr->processID = getpid();      // 현재 프로세스 ID 저장
             shmaddr->isMyTurn = 0;              // 초기화
             break;
         }
