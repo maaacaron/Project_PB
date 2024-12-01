@@ -292,7 +292,7 @@ int main(int argc, char* argv[])
             {
                 checkMyMonsterScene(receivedPlayerID);
             }
-        } while(choice == 1);
+        } while(choice != 1);
 
         while(getchar() != '\n');
     }

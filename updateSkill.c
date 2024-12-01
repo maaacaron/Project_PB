@@ -158,7 +158,7 @@ int update_skill(FILE* fp)      //scan_monster처럼 scan_skill만드려면 스�
     printf("수정할 스킬의 ID : ");
     if (scanf("%d", &sid) == 1)
     {
-        if(sid % 100 == 0)          //공격형
+        if(sid / 100 == 0)          //공격형
         {
             fseek(fp, sid * sizeof(rec_AS), SEEK_SET);
             fread_return = fread(&rec_AS, sizeof(rec_AS), 1, fp);
@@ -166,7 +166,7 @@ int update_skill(FILE* fp)      //scan_monster처럼 scan_skill만드려면 스�
         }
         fseek(fp, START_ATTACKSKILL_ID * sizeof(rec_AS), SEEK_SET);                         //위치 +100(공격스킬 크기)
 
-        if(sid % 100 == 1)     //버프
+        if(sid / 100 == 1)     //버프
         {
             fseek(fp, (sid - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);               //위치 +(SID - 100)(버프스킬 크기)
             fread_return = fread(&rec_BS, sizeof(rec_BS), 1, fp);
@@ -174,7 +174,7 @@ int update_skill(FILE* fp)      //scan_monster처럼 scan_skill만드려면 스�
         }
         fseek(fp, (START_BUFFSKILL_ID - START_ATTACKSKILL_ID) * sizeof(rec_BS), SEEK_CUR);  //위치 +100(버프스킬 크기)
 
-        if(sid % 100 == 2)     //디버프
+        if(sid / 100 == 2)     //디버프
         {
             fseek(fp, (sid - START_DEBUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);             //위치 +(SID - 200)(디버프스킬 크기)
             fread_return = fread(&rec_DS, sizeof(rec_DS), 1, fp);
@@ -182,7 +182,7 @@ int update_skill(FILE* fp)      //scan_monster처럼 scan_skill만드려면 스�
         }
         fseek(fp, (START_DEBUFFSKILL_ID - START_BUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);  //위치 +100(디버프스킬 크기)
         
-        if(sid % 100 == 3)     //힐
+        if(sid / 100 == 3)     //힐
         {
             fseek(fp, (sid - START_HEALSKILL_ID) * sizeof(rec_HS), SEEK_CUR);                   //위치 +(SID - 300)(힐스킬 크기)
             fread_return = fread(&rec_HS, sizeof(rec_HS), 1, fp);
@@ -193,25 +193,25 @@ int update_skill(FILE* fp)      //scan_monster처럼 scan_skill만드려면 스�
         
         if (fread_return > 0)
         {
-            if(sid % 100 == ATTACKSKILL)
+            if(sid / 100 == ATTACKSKILL)
             {
                 if(update_attackSkill(fp, rec_AS) == 0) return 0;
             }
 
 
-            else if(sid % 100 == BUFFSKILL)
+            else if(sid / 100 == BUFFSKILL)
             {
                 if(update_buffSkill(fp, rec_BS) == 0) return 0;
             }
 
 
-            else if(sid % 100 == DEBUFFSKILL)
+            else if(sid / 100 == DEBUFFSKILL)
             {
                 if(update_debuffSkill(fp, rec_DS) == 0) return 0;                
             }
 
 
-            else if(sid % 100 == HEALSKILL)
+            else if(sid / 100 == HEALSKILL)
             {
                 update_healSkill(fp, rec_HS);
             }

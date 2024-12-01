@@ -148,7 +148,7 @@ int create_skill(FILE* fp)
     scanf("%d", &skill_type);
 
     if(skill_type == ATTACKSKILL)       //공격 스킬
-    {        
+    {
         if(create_attackSkill(fp, rec_AS) == 0) return 0;
     }
 

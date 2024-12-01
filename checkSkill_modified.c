@@ -127,6 +127,7 @@ void check_skill(FILE* fp)
 
     int sid;
 
+    printf("검색할 스킬의 SID 입력: ");
     if (scanf("%d", &sid) == 1) 
     {
         // sid 값에 따라 해당 스킬 영역에 접근

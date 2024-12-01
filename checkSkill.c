@@ -57,6 +57,7 @@ void check_buffSkill(FILE* fp, struct buffSkill rec_BS)
             printf("공격력 증가량 : %d  방어력 증가량 : %d  속도 증가량 : %d", rec_BS.attack_up_value, rec_BS.defense_up_value, rec_BS.speed_up_value);
         }
     }
+    else perror("fread");
 }
 
 void check_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
@@ -104,6 +105,7 @@ void check_debuffSkill(FILE* fp, struct debuffSkill rec_DS)
             printf("공격력 감소량 : %d  방어력 감소량 : %d  속도 감소량 : %d", rec_DS.attack_down_value, rec_DS.defense_down_value, rec_DS.speed_down_value);
         }
     }
+    else perror("fread");
 }
 
 void check_healSkill(FILE* fp, struct healSkill rec_HS)
@@ -130,31 +132,31 @@ void check_skill(FILE* fp)
 
     // 스킬ID| 0~99: 공격스킬, 100~199: 버프스킬, 200~299: 디버프스킬, 300~399 힐스킬
     if (scanf("%d", &sid) == 1) {
-        if(sid % 100 == ATTACKSKILL)
+        if(sid / 100 == ATTACKSKILL)
         {
             fseek(fp, sid * sizeof(rec_AS), SEEK_SET);
             check_attackSkill(fp, rec_AS);
         }
 
-        fseek(fp, START_ATTACKSKILL_ID * sizeof(rec_AS), SEEK_SET);     //위치 + 100(100)
+        fseek(fp, START_BUFFSKILL_ID * sizeof(rec_AS), SEEK_SET);     //위치 + 100(100)
 
-        if(sid % 100 == BUFFSKILL)
+        if(sid / 100 == BUFFSKILL)
         {
             fseek(fp, (sid - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);
             check_buffSkill(fp, rec_BS);
         }
 
-        fseek(fp, (START_BUFFSKILL_ID - START_ATTACKSKILL_ID) * sizeof(rec_BS), SEEK_CUR);  //위치 + 100(200)
+        fseek(fp, (START_DEBUFFSKILL_ID - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);  //위치 + 100(200)
 
-        if(sid % 100 == DEBUFFSKILL)  
+        if(sid / 100 == DEBUFFSKILL)  
         {
             fseek(fp, (sid - START_BUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);
             check_debuffSkill(fp, rec_DS);
         }
 
-        fseek(fp, (START_DEBUFFSKILL_ID - START_BUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);  //위치 + 100(300)
+        fseek(fp, (START_HEALSKILL_ID - START_DEBUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);  //위치 + 100(300)
 
-        if(sid % 100 == HEALSKILL)
+        if(sid / 100 == HEALSKILL)
         {
             fseek(fp, (sid - START_DEBUFFSKILL_ID) * sizeof(rec_HS), SEEK_CUR);
             check_healSkill(fp, rec_HS);
