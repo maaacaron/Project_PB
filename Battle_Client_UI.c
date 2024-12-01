@@ -110,6 +110,7 @@ void player_turn_attack(struct player* shmp, int processID, int opponentID)
 		shmp[processID].is_battle_end = 1; // is_battle_End = 1;
 		shmp[opponentID].is_battle_end = 1; // is_battle_End = 1;
 		shmp[opponentID].is_wined = 1; // is_battle_End = 1;
+		Reset_Shm(shmp, processID, opponentID);
 
 		printf("[Battle Manager]: 당신은 승리하였습니다. 메인 화면으로 돌아갑니까?\n");
 		printf("[Battle Manager]: 예: 1, 아니요: 0\n");
@@ -151,6 +152,7 @@ void waiting_opponent(struct player* shmp, int processID, int opponentID)
 			shmp[processID].is_battle_end = 1; // is_battle_End = 1;
 			shmp[opponentID].is_battle_end = 1; // is_battle_End = 1;
 			shmp[opponentID].is_wined = 1; // is_battle_End = 1;
+			Reset_Shm(shmp, processID, opponentID);
 
 			shmdt(shmp);
 			return;
@@ -239,7 +241,7 @@ void Devide_Team(int processID) // process_ID를 전달받음 0,1,2,3
 	start_hp = shmp[processID].selectedMonster.stats.HP;
 	start_speed = shmp[processID].selectedMonster.stats.speed;
 
-	Reset_Shm(shmp, processID, opponentID); // 공유 메모리 값들 중 배틀 관련 함수 초기화
+	Reset_Shm(shmp, processID, opponentID); // 공유 메모리 값들 중 포켓몬 관련 함수 초기화
 	Print_Battle_Begine(shmp, processID, opponentID); // 배틀 문구 프린트
 
 	// 각 포켓몬 스피드값 비교하여 선제턴 주기
