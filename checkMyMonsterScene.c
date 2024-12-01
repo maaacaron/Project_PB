@@ -88,7 +88,7 @@ void checkMySkillInfo(int receivedPlayerID, struct player* shmaddr)
 void checkMyMonster(int receivedPlayerID)
 {
     key_t key = ftok("main", 1);
-    int shmid = shmget(key, sizeof(struct player) * 4, IPC_CREAT | 0644);
+    int shmid = shmget(key, sizeof(struct player) * 5, IPC_CREAT | 0644);
     if (shmid == -1)
     {
         perror("shmget 실패");

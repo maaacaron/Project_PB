@@ -212,7 +212,7 @@ void* make_shared_memory()          //공유 메모리 생성 및 연결
     key_t key;
 
     key = ftok("main", 1);
-    shmid = shmget(key, sizeof(struct player) * 4, 0);
+    shmid = shmget(key, sizeof(struct player) * 5, 0);
     if(shmid == -1)
     {
         perror("shmget");
@@ -255,7 +255,6 @@ int main(int argc, char* argv[])
         fprintf(stderr, "파일 열기 오류\n");
         exit(1);
     }
-
     make_shared_memory();
 
     if(strcmp(argv[2], "skill") == 0)   //인수로 skill을 받아왔으면 스킬 이벤트 실행(3번째 스킬 얻는 이벤트)

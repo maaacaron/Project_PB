@@ -44,7 +44,7 @@ int main()
     {
         //서버 역할 : 공유 메모리 생성 및 초기화
         // 새로운 공유 메모리 생성 및 초기화
-        shmid = shmget(key, sizeof(struct player) * 4, IPC_CREAT | IPC_EXCL | 0644);
+        shmid = shmget(key, sizeof(struct player) * 5, IPC_CREAT | IPC_EXCL | 0644);
         if (shmid == -1) {
             perror("공유 메모리 생성 실패.");
             exit(1);
@@ -72,9 +72,10 @@ int main()
         }
         printf("서버가 성공적으로 실행되었습니다.");
     }
+
     else
     {
-        shmid = shmget(key, sizeof(struct player) * 4, 0644); // 기존 공유 메모리 가져오기
+        shmid = shmget(key, sizeof(struct player) * 5, 0644); // 기존 공유 메모리 가져오기
         if (shmid == -1) {
             perror("공유 메모리 가져오기 실패. 서버가 실행 중인지 확인하세요.");
             exit(1);

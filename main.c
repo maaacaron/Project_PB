@@ -9,26 +9,6 @@
 #include "player.h"
 #include "monster.h"
 
-char* make_shared_memory()          //공유 메모리 생성 및 연결 
-{
-    int shmid;
-    key_t key;
-    char* shmaddr;
-
-    key = ftok("main", 1);
-    shmid = shmget(key, 1024, IPC_CREAT | 0644);
-    if (shmid == -1)
-    {
-        perror("shmget");
-        exit(1);
-    }
-
-    printf("shmid : %d", shmid);
-    shmaddr = (char*)shmat(shmid, NULL, 0);
-
-    return shmaddr;
-}
-
 int printMonsterNames(const char* filename)
 {
     FILE* fp = fopen(filename, "rb");
@@ -162,7 +142,7 @@ int main(int argc, char* argv[])
     const char* filename = "monsterDex";
 
     key_t key = ftok("main", 1);
-    int shmid = shmget(key, sizeof(struct player) * 4, IPC_CREAT | 0644);
+    int shmid = shmget(key, sizeof(struct player) * 5, IPC_CREAT | 0644);
     if (shmid == -1) {
         perror("shmget 실패");
         exit(1);

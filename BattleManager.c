@@ -43,7 +43,7 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 	key = ftok("main", 1);
 
 	//공유 메모리 접근
-	shmid = shmget(key, sizeof(struct player) * 4, 0); // 플레이어
+	shmid = shmget(key, sizeof(struct player) * 5, 0); // 플레이어
 
 	// 접근 예외처리
 	if (shmid == -1) 
