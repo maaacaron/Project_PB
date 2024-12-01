@@ -136,7 +136,7 @@ void check_skill(FILE* fp)
             check_attackSkill(fp, rec_AS);
         }
 
-        fseek(fp, START_ATTACKSKILL_ID * sizeof(rec_AS), SEEK_SET);
+        fseek(fp, START_ATTACKSKILL_ID * sizeof(rec_AS), SEEK_SET);     //위치 + 100(100)
 
         if(sid % 100 == BUFFSKILL)
         {
@@ -144,7 +144,7 @@ void check_skill(FILE* fp)
             check_buffSkill(fp, rec_BS);
         }
 
-        fseek(fp, (START_BUFFSKILL_ID - START_ATTACKSKILL_ID) * sizeof(rec_BS), SEEK_CUR);
+        fseek(fp, (START_BUFFSKILL_ID - START_ATTACKSKILL_ID) * sizeof(rec_BS), SEEK_CUR);  //위치 + 100(200)
 
         if(sid % 100 == DEBUFFSKILL)  
         {
@@ -152,7 +152,7 @@ void check_skill(FILE* fp)
             check_debuffSkill(fp, rec_DS);
         }
 
-        fseek(fp, (START_DEBUFFSKILL_ID - START_BUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);
+        fseek(fp, (START_DEBUFFSKILL_ID - START_BUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);  //위치 + 100(300)
 
         if(sid % 100 == HEALSKILL)
         {
@@ -163,7 +163,6 @@ void check_skill(FILE* fp)
     // 예외처리
     else printf("입력 오류");
 }
-
 
 
 int main(int argc, char *argv[])
