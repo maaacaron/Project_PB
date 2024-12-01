@@ -94,7 +94,6 @@
     <ClCompile Include="PrintShm.c" />
     <ClCompile Include="RestBattleShm.c" />
     <ClCompile Include="server.c" />
-    <ClCompile Include="serverPlayer.c" />
     <ClCompile Include="updateMonster.c" />
     <ClCompile Include="updateSkill.c" />
   </ItemGroup>

@@ -32,7 +32,7 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 
 	int playerID = 0;
 	int processID = 0;
-	playerID = atoi(argv[1]); // 플레이어 아이디 ex(1, 281, 19, 22)
+	playerID = atoi(argv[1]); // 플레이어 아이이디 ex 0
 
 	char processID_str[MAXLINE];
 
@@ -43,7 +43,7 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 	key = ftok("main", 1);
 
 	//공유 메모리 접근
-	shmid = shmget(key, sizeof(struct player) * 5, 0); // 플레이어
+	shmid = shmget(key, sizeof(struct player) * 8, 0); // 플레이어
 
 	// 접근 예외처리
 	if (shmid == -1) 
@@ -54,13 +54,13 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 
 	// 해당 프로세스에 플레이어 공유 메모리 부착
 	shmp = (struct player*)shmat(shmid, NULL, 0);
-	processID = findPlayerIndexByID(shmp, playerID); // 생성할 때 순차적으로 부여되는 프로세스 아이디 (1, 2, 3, 4..)
+	processID = findPlayerIndexByID(shmp, playerID); // 생성할 때 순차적으로 부여되는 프로세스 아이디 (1, 2, 3, 4..) 플레이어 아이디가 0이면 프로세스 아이디는 1
 
 	printf("[Battle Manager]: |서버 구동 시작...|\n");
 
 	Check_Loser(processID, shmp);
 
-	if (processID + 1 == 1) // who am i == 1
+	if (processID == 1) // who am i == 1
 	{
 		sleep(1);
 		if ((pid = fork()) == 0)
@@ -77,7 +77,7 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 		}
 	}
 
-	if (processID + 1 == 2) // who am i == 1
+	if (processID == 2) // who am i == 1
 	{
 		sleep(1);
 		if ((pid2 = fork()) == 0)
@@ -94,7 +94,7 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 		}
 	}
 
-	if (processID + 1 == 3) // who am i == 1
+	if (processID == 3) // who am i == 1
 	{
 		sleep(1);
 		if ((pid3 = fork()) == 0)
@@ -111,7 +111,7 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 		}
 	}
 
-	if (processID + 1 == 4) // who am i == 1
+	if (processID == 4) // who am i == 1
 	{
 		sleep(1);
 		if ((pid4 = fork()) == 0)
@@ -129,9 +129,9 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 	}
 
 	child = wait(&status);
+	waitingPlayer_All_BattleEnd(shmp);
 	Check_Loser(processID, shmp);
 
-	waitingPlayer_All_BattleEnd(shmp);
 	Check_Winner(playerID, processID, shmp);
 }
 
@@ -140,6 +140,7 @@ void Check_Loser(int processID, struct player* shmp)
 	// processID: who am i | shmp[~]: is_dead
 	if (shmp[processID].is_dead == 1) //shmp[3]: is_dead
 	{
+		shmp[processID].is_dead = 1;
 		printf("\n당신은 패배하였다. (프로그램 종료)\n");
 		shmdt(shmp);
 	}
@@ -183,7 +184,7 @@ void Check_Winner(int playerID, int processID, struct player* shmp)
 			wait(&status); // 자식 프로세스에서 전달하는 결과 대기
 			Read_to_Pipe(fd, &receivedWinnerID);
 		}
-		exit(0);
+		return;
 		//execl("./main", "main", playerID, NULL); // 메인프로그램으로 다시 이동
 	}
 
@@ -215,11 +216,11 @@ void Check_Winner(int playerID, int processID, struct player* shmp)
 // 플레이어 ID를 사용해 프로세스 ID를 탐색 (플레이어가 생성된 순서대로 부여되는 번호)
 int findPlayerIndexByID(struct player* shmp, int playerID)
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 1; i < 5; i++) // <- 서버 0번으로 인해 수정함
 	{ // 4명 기준
-		if (shmp[i].playerID == playerID)
+		if (shmp[i].playerID == playerID) // shmp[1].playerID = 0 
 		{
-			return i; // 해당 플레이어의 인덱스 반환
+			return i; // 해당 플레이어의 인덱스 반환 1반환
 		}
 	}
 	perror("noFoundPID");
@@ -234,32 +235,29 @@ void waitingPlayer_All_BattleEnd(struct player* shmp)
 	int flag4 = 0;
 
 	printf("\n[BattleManager]: 다른 모든 플레이어가 전투가 끝날 때 까지 대기중..\n");
-
-	while (flag1 + flag2 + flag3 + flag4 != 4)
+	printf("|p1: %d |p2: %d |p3: %d |p4: %d\n", shmp[1].is_battle_end, shmp[2].is_battle_end, shmp[3].is_battle_end, shmp[4].is_battle_end);
+	while (flag1 + flag2 + flag3 + flag4 < 4)
 	{
-		if (shmp[0].is_battle_end == 1 && flag1 == 0) //플레이어 1 전투 끝났나?
+		if (shmp[1].is_battle_end == 1 && flag1 == 0) //플레이어 1 전투 끝났나?
 		{
 			flag1 = 1;
 		}
 
-		if (shmp[1].is_battle_end == 1 && flag2 == 0) // 플레이어 2 전투 끝났나?
+		if (shmp[2].is_battle_end == 1 && flag2 == 0) // 플레이어 2 전투 끝났나?
 		{
 			flag2 = 1;
 		}
 
-		if (shmp[2].is_battle_end == 1 && flag3 == 0) // 플레이어 2 전투 끝났나?
+		if (shmp[3].is_battle_end == 1 && flag3 == 0) // 플레이어 2 전투 끝났나?
 		{
 			flag3 = 1;
 		}
 
-		if (shmp[3].is_battle_end == 1 && flag4 == 0) // 플레이어 2 전투 끝났나?
+		if (shmp[4].is_battle_end == 1 && flag4 == 0) // 플레이어 2 전투 끝났나?
 		{
 			flag4 = 1;
 		}
-		
-		sleep(1);
 	}
-
 	return;
 }
 

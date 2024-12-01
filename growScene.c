@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include "event.h"
 #include "player.h"
-#define TOTAL_GROWING_DATE 4
+#define TOTAL_GROWING_DATE 1 // 이거 원래 4였음 수정수정
 
 // 성장 씬 함수 
 struct player *shmaddr;
@@ -212,7 +212,7 @@ void* make_shared_memory()          //공유 메모리 생성 및 연결
     key_t key;
 
     key = ftok("main", 1);
-    shmid = shmget(key, sizeof(struct player) * 5, 0);
+    shmid = shmget(key, sizeof(struct player) * 8, 0);
     if(shmid == -1)
     {
         perror("shmget");

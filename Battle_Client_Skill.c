@@ -43,7 +43,7 @@ void Run_buffSkill(FILE* fp, struct buffSkill rec_BS, struct player* shmp, int p
 void Run_debuffSkill(FILE* fp, struct debuffSkill rec_DS, struct player* shmp, int processID, int opponentID, int sid);
 void Run_healSkill(FILE* fp, struct healSkill rec_HS, struct player* shmp, int processID, int opponentID, int sid);
 
-int main(int argc, char* argv[]) // 프로세스ID를 전달받음
+int main(int argc, char* argv[]) // 프로세스ID를 전달받음 1, 2, 3, 4
 {
 	int process_ID = 0;
 
@@ -155,14 +155,13 @@ void player_turn_attack(struct player* shmp, int processID, int opponentID)
 		shmp[processID].is_battle_end = 1; // is_battle_End = 1;
 		shmp[opponentID].is_battle_end = 1; // is_battle_End = 1;
 		shmp[opponentID].is_wined = 1; // is_battle_End = 1;
-		Reset_Shm(shmp, processID, opponentID);
 
 		printf("[Battle Manager]: 당신은 승리하였습니다. 메인 화면으로 돌아갑니까?\n");
 		printf("[Battle Manager]: 예: 1, 아니요: 0\n");
 
 		scanf("%d", &answer);
 		printf("[Battle Manager]: 메인 화면으로 돌아갑니다..\n");
-
+		Reset_Shm(shmp, processID, opponentID);
 		shmdt(shmp);
 		return;
 	}
@@ -232,8 +231,6 @@ void waiting_opponent(struct player* shmp, int processID, int opponentID)
 			shmp[processID].is_dead = 1; // isdead = 1;
 			shmp[processID].is_battle_end = 1; // is_battle_End = 1;
 			shmp[opponentID].is_battle_end = 1; // is_battle_End = 1;
-			shmp[opponentID].is_wined = 1; // is_battle_End = 1;
-			Reset_Shm(shmp, processID, opponentID);
 
 			shmdt(shmp);
 			return;
@@ -246,7 +243,7 @@ void waiting_opponent(struct player* shmp, int processID, int opponentID)
 	}
 }
 
-void Devide_Team(int processID) // process_ID를 전달받음 0,1,2,3
+void Devide_Team(int processID) // process_ID를 전달받음 1, 2, 3, 4
 //조를 나눠 싸우게 만들어줄 수 있도록 하게 해주는 함수
 {
 	int opponentID = 0;
@@ -260,7 +257,7 @@ void Devide_Team(int processID) // process_ID를 전달받음 0,1,2,3
 	key = ftok("main", 1);
 
 	//공유 메모리 접근
-	shmid = shmget(key, sizeof(struct player) * 5, 0); // 플레이어
+	shmid = shmget(key, sizeof(struct player) * 8, 0); // 플레이어
 
 	// 접근 예외처리
 	if (shmid == -1)
@@ -275,7 +272,7 @@ void Devide_Team(int processID) // process_ID를 전달받음 0,1,2,3
 	// 2명 생존했을 때 상대를 정하는 블럭////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	if (shmp[processID].is_wined == 1) // is_win가 한번이라도 있으면 2명만 생존하고있다는 말..
 	{
-		for (int i = 0; i < 4; i++)
+		for (int i = 1; i < 5; i++)
 		{
 			// 내가 아닌 4명중 is_wined가 찍혀있고
 			if (shmp[i].is_wined == 1 && processID != i)
@@ -289,28 +286,28 @@ void Devide_Team(int processID) // process_ID를 전달받음 0,1,2,3
 	// 4명 생존했을 때 상대를 정하는 블럭////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	else if (shmp[processID].is_wined != 1) // 4명 이상 생존하였을 때 임의로 정해준다
 	{
-		if (processID + 1 == 1)
+		if (processID == 1) // 프로세스 아이디는 1,2,3,4
 		{
 			// p1 vs p2
+			opponentID = 2;
+		}
+
+		if (processID == 2)
+		{
+			// p2 vs p1
 			opponentID = 1;
 		}
 
-		if (processID + 1 == 2)
-		{
-			// p2 vs p1
-			opponentID = 0;
-		}
-
-		if (processID + 1 == 3)
+		if (processID == 3)
 		{
 			// p3 vs p4
-			opponentID = 3;
+			opponentID = 4;
 		}
 
-		if (processID + 1 == 4)
+		if (processID == 4)
 		{
 			// p4 vs p3
-			opponentID = 2;
+			opponentID = 3;
 		}
 		printf("\n 내 프로세스ID는 %d 상대 프로세스 ID는 %d", processID, opponentID);
 	}

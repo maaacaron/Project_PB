@@ -24,15 +24,7 @@ int main()
 	key = ftok("main", 1);
 
 	//공유 메모리 접근
-	shmid = shmget(key, sizeof(struct player) * 4, IPC_CREAT | IPC_EXCL | 0644);
-	if (shmid == -1) {
-		perror("공유 메모리 생성 실패.");
-		shmid = shmget(key, sizeof(struct player) * 4, 0);
-		if (shmid == -1) {
-			perror("존재하는 공유 메모리 없음.");
-			exit(1);
-		}
-	}
+	shmid = shmget(key, sizeof(struct player) * 8, 0); // 플레이어
 
 	// 접근 예외처리
 	if (shmid == -1)
@@ -53,10 +45,10 @@ int main()
 		shmp[i].is_battle_end = 0;
 		shmp[i].is_wined = 0;
 
-		shmp[i].selectedMonster.stats.attackPower = 2;
-		shmp[i].selectedMonster.stats.HP = 8;
-		shmp[i].selectedMonster.stats.speed = 7 - i;
-		shmp[i].selectedMonster.stats.defensePower = 3;
+		shmp[i].selectedMonster.stats.attackPower = 0;
+		shmp[i].selectedMonster.stats.HP = 0;
+		shmp[i].selectedMonster.stats.speed = 0;
+		shmp[i].selectedMonster.stats.defensePower = 0;
 
 		printf("\nplayerID: %d\n", shmp[i].playerID);
 		printf("processID: %d\n", i);

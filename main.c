@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
     const char* filename = "monsterDex";
 
     key_t key = ftok("main", 1);
-    int shmid = shmget(key, sizeof(struct player) * 5, IPC_CREAT | 0644);
+    int shmid = shmget(key, sizeof(struct player) * 8, IPC_CREAT | 0644);
     if (shmid == -1) {
         perror("shmget 실패");
         exit(1);
@@ -204,8 +204,9 @@ int main(int argc, char* argv[])
     //배틀씬으로
     callBattleScene(receivedPlayerID);
 
-    if (shmaddr[receivedPlayerID].is_dead == 1) // 배틀씬 끝난 후 패배한 플레이어라면
+    if (shmaddr[receivedPlayerID + 1].is_dead == 1) // 배틀씬 끝난 후 패배한 플레이어라면
     {
+        printf("\nprocess %d is_dead == %d \n", receivedPlayerID + 1, shmaddr[receivedPlayerID + 1].is_dead);
         exit(0);
     }
 
