@@ -182,10 +182,8 @@ int main(int argc, char* argv[])
     char c;
 	FILE *fp;
 
-	fp = fopen("skillDex", "ab");
-
     // 예외처리
-    if ((fp = fopen("skillDex", "rb")) == NULL) {
+    if ((fp = fopen("skillDex", "ab")) == NULL) {
         fprintf(stderr, "파일 열기 오류\n");
         exit(2);
     }
