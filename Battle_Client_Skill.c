@@ -26,14 +26,22 @@ char c;
 FILE* fp;
 
 void Devide_Team(int playerID);
-
 void player_turn_attack(struct player* shmp, int processID, int opponentID); // 플레이어 공격 함수
-
 void waiting_opponent(struct player* shmp, int processID, int opponentID); // 상대 플레이어 대기 함수
-
 void Reset_Shm(struct player* shmp, int processID, int opponentID);
-
 void Print_Battle_Begine(struct player* shmp, int processID, int opponentID);
+
+void Print_Skill_name(int sid); // 스킬 아이디를 입력받아 적절하게 보유 스킬 텍스트를 출력
+void Print_attackSkill(struct attackSkill rec_AS);
+void Print_buffSkill(struct buffSkill rec_BS);
+void Print_debuffSkill(struct debuffSkill rec_DS);
+void Print_healSkill(struct healSkill rec_HS);
+
+void Ready_skill(struct player* shmp, int processID, int opponentID, int sid); // 사용자로부터 스킬 아이디를 입력받아 스킬 타입에 맞는 스킬 실행
+void Run_attackSkill(FILE* fp, struct attackSkill rec_AS, struct player* shmp, int processID, int opponentID, int sid);
+void Run_buffSkill(FILE* fp, struct buffSkill rec_BS, struct player* shmp, int processID, int opponentID, int sid);
+void Run_debuffSkill(FILE* fp, struct debuffSkill rec_DS, struct player* shmp, int processID, int opponentID, int sid);
+void Run_healSkill(FILE* fp, struct healSkill rec_HS, struct player* shmp, int processID, int opponentID, int sid);
 
 int main(int argc, char* argv[]) // 프로세스ID를 전달받음
 {
@@ -385,51 +393,88 @@ void Print_Battle_Begine(struct player* shmp, int processID, int opponentID)
 
 void Print_Skill_name(int sid) // 스킬 아이디를 입력받아 적절하게 보유 스킬 텍스트를 출력
 {	
-	if (sid != -1)
+	// 예외처리
+	if ((fp = fopen("skillDex", "rb")) == NULL) {
+		fprintf(stderr, "스킬 파일 열기 오류\n");
+		exit(2);
+	}
+
+	// 스킬 sid를 입력받아 해당 스킬 확인시켜주기
+	struct attackSkill rec_AS;
+	struct buffSkill rec_BS;
+	struct debuffSkill rec_DS;
+	struct healSkill rec_HS;
+
+	printf("\nDEBUG| SID: %d를 검색합니다.\n");
+
+	// sid 값에 따라 해당 스킬 영역에 접근
+	if (sid >= 0 && sid < 100)
 	{
-		// 예외처리
-		if ((fp = fopen("skillDex", "rb")) == NULL) 
-		{
-			fprintf(stderr, "스킬 파일 열기 오류\n");
-			exit(2);
-		}
-
-		// 스킬 sid를 입력받아 해당 스킬 확인시켜주기
-		struct attackSkill rec_AS;
-		struct buffSkill rec_BS;
-		struct debuffSkill rec_DS;
-		struct healSkill rec_HS;
-
-		if (sid / 100 == ATTACKSKILL)
-		{
+		// AS 영역
+		// sid가 0~99 범위에 있을 때, AS 영역의 데이터에 접근
+		if (sid < 8) {  // 실제로 저장된 AS 항목이 8개이므로, sid가 0~7인 경우만 유효
 			fseek(fp, sid * sizeof(rec_AS), SEEK_SET);
 			Print_attackSkill(rec_AS);
 		}
 
-		fseek(fp, START_BUFFSKILL_ID * sizeof(rec_AS), SEEK_SET);     //위치 + 100(100)
-
-		if (sid / 100 == BUFFSKILL)
+		else
 		{
-			fseek(fp, (sid - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);
+			printf("유효하지 않은 SID입니다. AS 범위 내에 SID가 없습니다.\n");
+		}
+	}
+
+	if (sid >= 100 && sid < 200)
+	{
+		// BS 영역
+		// sid가 100~199 범위에 있을 때, BS 영역으로 이동
+		if (sid - 100 < 3)
+		{  // 실제로 저장된 BS 항목이 3개이므로, sid가 100~102인 경우만 유효
+			fseek(fp, 8 * sizeof(rec_AS), SEEK_SET);  // AS 영역을 넘기기
+			fseek(fp, (sid - 100) * sizeof(rec_BS), SEEK_CUR);  // BS 영역으로 이동
 			Print_buffSkill(rec_BS);
 		}
-
-		fseek(fp, (START_DEBUFFSKILL_ID - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);  //위치 + 100(200)
-
-		if (sid / 100 == DEBUFFSKILL)
+		else
 		{
-			fseek(fp, (sid - START_BUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);
+			printf("유효하지 않은 SID입니다. BS 범위 내에 SID가 없습니다.\n");
+		}
+	}
+
+	if (sid >= 200 && sid < 300)
+	{  // DS 영역
+		if (sid - 200 < 2)
+		{  // 실제로 저장된 DS 항목이 2개이므로, sid가 200~201인 경우만 유효
+			fseek(fp, 8 * sizeof(rec_AS), SEEK_SET);  // AS 영역을 넘기기
+			fseek(fp, 3 * sizeof(rec_BS), SEEK_CUR);  // BS 영역을 넘기기
+			fseek(fp, (sid - 200) * sizeof(rec_DS), SEEK_CUR);  // DS 영역으로 이동
 			Print_debuffSkill(rec_DS);
 		}
 
-		fseek(fp, (START_HEALSKILL_ID - START_DEBUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);  //위치 + 100(300)
-
-		if (sid / 100 == HEALSKILL)
+		else
 		{
-			fseek(fp, (sid - START_DEBUFFSKILL_ID) * sizeof(rec_HS), SEEK_CUR);
+			printf("유효하지 않은 SID입니다. DS 범위 내에 SID가 없습니다.\n");
+		}
+	}
+
+	if (sid >= 300 && sid < 400)
+	{  // HS 영역
+		if (sid - 300 < 1)
+		{  // 실제로 저장된 HS 항목이 1개이므로, sid가 300~300인 경우만 유효
+			fseek(fp, 8 * sizeof(rec_AS), SEEK_SET);  // AS 영역을 넘기기
+			fseek(fp, 3 * sizeof(rec_BS), SEEK_CUR);  // BS 영역을 넘기기
+			fseek(fp, 2 * sizeof(rec_DS), SEEK_CUR);  // DS 영역을 넘기기
+			fseek(fp, (sid - 300) * sizeof(rec_HS), SEEK_CUR);  // HS 영역으로 이동
 			Print_healSkill(rec_HS);
 		}
-		return;
+
+		else
+		{
+			printf("유효하지 않은 SID입니다. HS 범위 내에 SID가 없습니다.\n");
+		}
+	}
+
+	else
+	{
+		printf("유효하지 않은 SID입니다. 범위를 벗어났습니다.\n");
 	}
 	return;
 }
@@ -514,36 +559,76 @@ void Ready_skill(struct player* shmp, int processID, int opponentID, int sid) //
 
 	printf("\nDEBUG| SID: %d를 검색합니다.\n");
 
-	// 스킬ID| 0~99: 공격스킬, 100~199: 버프스킬, 200~299: 디버프스킬, 300~399 힐스킬
-	if (sid / 100 == ATTACKSKILL)
-	{
-		fseek(fp, sid * sizeof(rec_AS), SEEK_SET);
-		Run_attackSkill(fp, rec_AS, shmp, processID, opponentID, sid);
+	// sid 값에 따라 해당 스킬 영역에 접근
+	if (sid >= 0 && sid < 100) 
+	{  
+		// AS 영역
+		// sid가 0~99 범위에 있을 때, AS 영역의 데이터에 접근
+		if (sid < 8) {  // 실제로 저장된 AS 항목이 8개이므로, sid가 0~7인 경우만 유효
+			fseek(fp, sid * sizeof(rec_AS), SEEK_SET);
+			Run_attackSkill(fp, rec_AS, shmp, processID, opponentID, sid);
+		}
+
+		else 
+		{
+			printf("유효하지 않은 SID입니다. AS 범위 내에 SID가 없습니다.\n");
+		}
 	}
 
-	fseek(fp, START_BUFFSKILL_ID * sizeof(rec_AS), SEEK_SET);     //위치 + 100(100)
-
-	if (sid / 100 == BUFFSKILL)
-	{
-		fseek(fp, (sid - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);
-		Run_buffSkill(fp, rec_BS, shmp, processID, opponentID, sid);
+	if (sid >= 100 && sid < 200) 
+	{  
+		// BS 영역
+		// sid가 100~199 범위에 있을 때, BS 영역으로 이동
+		if (sid - 100 < 3) 
+		{  // 실제로 저장된 BS 항목이 3개이므로, sid가 100~102인 경우만 유효
+			fseek(fp, 8 * sizeof(rec_AS), SEEK_SET);  // AS 영역을 넘기기
+			fseek(fp, (sid - 100) * sizeof(rec_BS), SEEK_CUR);  // BS 영역으로 이동
+			Run_buffSkill(fp, rec_BS, shmp, processID, opponentID, sid);
+		}
+		else 
+		{
+			printf("유효하지 않은 SID입니다. BS 범위 내에 SID가 없습니다.\n");
+		}
 	}
 
-	fseek(fp, (START_DEBUFFSKILL_ID - START_BUFFSKILL_ID) * sizeof(rec_BS), SEEK_CUR);  //위치 + 100(200)
+	if (sid >= 200 && sid < 300) 
+	{  // DS 영역
+		if (sid - 200 < 2) 
+		{  // 실제로 저장된 DS 항목이 2개이므로, sid가 200~201인 경우만 유효
+			fseek(fp, 8 * sizeof(rec_AS), SEEK_SET);  // AS 영역을 넘기기
+			fseek(fp, 3 * sizeof(rec_BS), SEEK_CUR);  // BS 영역을 넘기기
+			fseek(fp, (sid - 200) * sizeof(rec_DS), SEEK_CUR);  // DS 영역으로 이동
+			Run_debuffSkill(fp, rec_DS, shmp, processID, opponentID, sid);
+		}
 
-	if (sid / 100 == DEBUFFSKILL)
-	{
-		fseek(fp, (sid - START_BUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);
-		Run_debuffSkill(fp, rec_DS, shmp, processID, opponentID, sid);
+		else
+		{
+			printf("유효하지 않은 SID입니다. DS 범위 내에 SID가 없습니다.\n");
+		}
 	}
 
-	fseek(fp, (START_HEALSKILL_ID - START_DEBUFFSKILL_ID) * sizeof(rec_DS), SEEK_CUR);  //위치 + 100(300)
+	if (sid >= 300 && sid < 400) 
+	{  // HS 영역
+		if (sid - 300 < 1) 
+		{  // 실제로 저장된 HS 항목이 1개이므로, sid가 300~300인 경우만 유효
+			fseek(fp, 8 * sizeof(rec_AS), SEEK_SET);  // AS 영역을 넘기기
+			fseek(fp, 3 * sizeof(rec_BS), SEEK_CUR);  // BS 영역을 넘기기
+			fseek(fp, 2 * sizeof(rec_DS), SEEK_CUR);  // DS 영역을 넘기기
+			fseek(fp, (sid - 300) * sizeof(rec_HS), SEEK_CUR);  // HS 영역으로 이동
+			Run_healSkill(fp, rec_HS, shmp, processID, opponentID, sid);
+		}
 
-	if (sid / 100 == HEALSKILL)
-	{
-		fseek(fp, (sid - START_DEBUFFSKILL_ID) * sizeof(rec_HS), SEEK_CUR);
-		Run_healSkill(fp, rec_HS, shmp, processID, opponentID, sid);
+		else 
+		{
+			printf("유효하지 않은 SID입니다. HS 범위 내에 SID가 없습니다.\n");
+		}
 	}
+
+	else 
+	{
+		printf("유효하지 않은 SID입니다. 범위를 벗어났습니다.\n");
+	}
+	return;
 }
 
 void Run_attackSkill(FILE* fp, struct attackSkill rec_AS, struct player* shmp, int processID, int opponentID, int sid)

@@ -122,7 +122,7 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 			snprintf(processID_str, sizeof(processID_str), "%d", processID);
 
 			// Battle Client 실행
-			execl("./Battle_Client_UI", "./Battle_Client_UI", processID_str, NULL);
+			execl("./Battle_Client_Skill", "./Battle_Client_Skill", processID_str, NULL);
 			perror("execl");
 			exit(5);
 		}
