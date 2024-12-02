@@ -274,7 +274,7 @@ int main(int argc, char* argv[]) // 플레이어가 입력한 아이디값 그�
             {
                 if(eid[i] == eid[j])
                 {
-                    if(specialEventCount < MAX_SPECIALEVENT_NUM) eid[i] = MAX_NORMALEVENT_NUM + ++specialEventCount;      //같은 이벤트가 나오면 스페셜 이벤트로 전환(최대 3회)
+                    if(specialEventCount < MAX_SPECIALEVENT_NUM) eid[i] = MAX_NORMALEVENT_NUM + specialEventCount++;      //같은 이벤트가 나오면 스페셜 이벤트로 전환(최대 3회)
                     break;
                 }
             }
