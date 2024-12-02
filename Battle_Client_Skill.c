@@ -78,11 +78,11 @@ void player_turn_attack(struct player* shmp, int playerID, int opponentID)
 	// 스킬과 포켓몬은 사용자가 입력받은 인덱스에 저장되어 있음
 	printf("스킬 1: ");
 	Print_Skill_name(shmp[playerID].selectedMonster.skills.skill_1_ID);
-	printf("스킬 2: ");
+	printf("\n스킬 2: ");
 	Print_Skill_name(shmp[playerID].selectedMonster.skills.skill_2_ID);
-	printf("스킬 3: ");
+	printf("\n스킬 3: ");
 	Print_Skill_name(shmp[playerID].selectedMonster.skills.skill_3_ID);
-	printf("스킬 4: ");
+	printf("\n스킬 4: ");
 	Print_Skill_name(shmp[playerID].selectedMonster.skills.skill_4_ID);
 
 	printf("\n[Battle Manager]: 스킬을 선택하세요(1 ~ 4)\n");
@@ -290,7 +290,6 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 			// p4 vs p3
 			opponentID = 2;
 		}
-		printf("\n 내 프로세스ID는 %d 상대 프로세스 ID는 %d", playerID, opponentID);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -334,7 +333,7 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 	// 만약 플레이어의 턴이면 공격 기회 얻기
 	if (shmp[playerID].isMyTurn == 1)
 	{
-		printf("\nDebug| p1 Speed: %d, p2 Speed: %d", shmp[playerID].selectedMonster.stats.speed, shmp[opponentID].selectedMonster.stats.speed);
+		printf("\nDebug| p1 Speed: %d, p2 Speed: %d\n", shmp[playerID].selectedMonster.stats.speed, shmp[opponentID].selectedMonster.stats.speed);
 		player_turn_attack(shmp, playerID, opponentID);
 	}
 
@@ -369,13 +368,13 @@ void Print_Battle_Begine(struct player* shmp, int playerID, int opponentID) // �
 {
 	printf("\n[Battle Manager]: || 포켓몬 배틀 시작! ||\n");
 
-	printf("P1 shm 정보: [0]| hp: %d, [1]| speed: %d, [2]| attack: %d, [3]| is_dead: %d, [4]| is_my_turn: %d, [5]| is_battle_End: %d, [6]| ID: %d, [7]| win: %d\n",
+	printf("\n[Battle Manager]: P1 shm 정보: [0]| hp: %d, [1]| speed: %d, [2]| attack: %d, [3]| is_dead: %d, [4]| is_my_turn: %d, [5]| is_battle_End: %d, [6]| ID: %d, [7]| win: %d\n",
 		shmp[playerID].selectedMonster.stats.HP, shmp[playerID].selectedMonster.stats.speed, shmp[playerID].selectedMonster.stats.attackPower,
-		shmp[playerID].is_dead, shmp[playerID].isMyTurn, shmp[playerID].is_battle_end, playerID + 1, shmp[playerID].is_wined);
+		shmp[playerID].is_dead, shmp[playerID].isMyTurn, shmp[playerID].is_battle_end, playerID, shmp[playerID].is_wined);
 
-	printf("P2 shm 정보: [0]| hp: %d, [1]| speed: %d, [2]| attack: %d, [3]| is_dead: %d, [4]| is_my_turn: %d, [5]| is_battle_End: %d, [6]| ID: %d, [7]| win: %d\n",
+	printf("\n[Battle Manager]: P2 shm 정보: [0]| hp: %d, [1]| speed: %d, [2]| attack: %d, [3]| is_dead: %d, [4]| is_my_turn: %d, [5]| is_battle_End: %d, [6]| ID: %d, [7]| win: %d\n",
 		shmp[opponentID].selectedMonster.stats.HP, shmp[opponentID].selectedMonster.stats.speed, shmp[opponentID].selectedMonster.stats.attackPower,
-		shmp[opponentID].is_dead, shmp[opponentID].isMyTurn, shmp[opponentID].is_battle_end, opponentID + 1, shmp[opponentID].is_wined);
+		shmp[opponentID].is_dead, shmp[opponentID].isMyTurn, shmp[opponentID].is_battle_end, opponentID, shmp[opponentID].is_wined);
 
 	return;
 }
@@ -622,22 +621,22 @@ void Run_buffSkill(FILE* fp, struct buffSkill rec_BS, struct player* shmp, int p
 		{
 			printf("DEBUG| 버프 종류 : 공격력\n");
 			printf("DEBUG| 공격력 증가량 : %d\n", rec_BS.attack_up_value);
-			printf(("DEBUG| 버프 전 포켓몬의 공격력 : %d\n", shmp[playerID].selectedMonster.stats.attackPower));
+			printf("DEBUG| 버프 전 포켓몬의 공격력 : %d\n", shmp[playerID].selectedMonster.stats.attackPower);
 
 			shmp[playerID].selectedMonster.stats.attackPower += rec_BS.attack_up_value;
 
-			printf(("DEBUG| 버프 후 포켓몬의 공격력 : %d\n", shmp[playerID].selectedMonster.stats.attackPower));
+			printf("DEBUG| 버프 후 포켓몬의 공격력 : %d\n", shmp[playerID].selectedMonster.stats.attackPower);
 		}
 
 		if (rec_BS.buff_type == 2)
 		{
 			printf("DEBUG| 버프 종류 : 방어력\n");
 			printf("DEBUG| 방어력 증가량 : %d", rec_BS.defense_up_value);
-			printf(("DEBUG| 버프 전 포켓몬의 방어력 : %d\n", shmp[playerID].selectedMonster.stats.defensePower));
+			printf("DEBUG| 버프 전 포켓몬의 방어력 : %d\n", shmp[playerID].selectedMonster.stats.defensePower);
 
 			shmp[playerID].selectedMonster.stats.defensePower += rec_BS.defense_up_value;
 
-			printf(("DEBUG| 버프 후 포켓몬의 방어력 : %d\n", shmp[playerID].selectedMonster.stats.defensePower));
+			printf("DEBUG| 버프 후 포켓몬의 방어력 : %d\n", shmp[playerID].selectedMonster.stats.defensePower);
 		}
 		return;
 	}
@@ -656,22 +655,22 @@ void Run_debuffSkill(FILE* fp, struct debuffSkill rec_DS, struct player* shmp, i
 		{
 			printf("디버프 종류 : 공격력\n");
 			printf("공격력 감소량 : %d", rec_DS.attack_down_value);
-			printf(("DEBUG| 디버프 전 상대 포켓몬의 공격력 : %d\n", shmp[opponentID].selectedMonster.stats.attackPower));
+			printf("DEBUG| 디버프 전 상대 포켓몬의 공격력 : %d\n", shmp[opponentID].selectedMonster.stats.attackPower);
 
 			shmp[opponentID].selectedMonster.stats.attackPower -= rec_DS.attack_down_value;
 
-			printf(("DEBUG| 디버프 후 상대 포켓몬의 공격력 : %d\n", shmp[opponentID].selectedMonster.stats.attackPower));
+			printf("DEBUG| 디버프 후 상대 포켓몬의 공격력 : %d\n", shmp[opponentID].selectedMonster.stats.attackPower);
 		}
 
 		if (rec_DS.debuff_type == 2)
 		{
 			printf("디버프 종류 : 방어력\n");
 			printf("방어력 감소량 : %d", rec_DS.defense_down_value);
-			printf(("DEBUG| 디버프 전 상대 포켓몬의 방어력 : %d\n", shmp[opponentID].selectedMonster.stats.defensePower));
+			printf("DEBUG| 디버프 전 상대 포켓몬의 방어력 : %d\n", shmp[opponentID].selectedMonster.stats.defensePower);
 
 			shmp[opponentID].selectedMonster.stats.defensePower -= rec_DS.defense_down_value;
 
-			printf(("DEBUG| 디버프 후 상대 포켓몬의 방어력 : %d\n", shmp[opponentID].selectedMonster.stats.defensePower));
+			printf("DEBUG| 디버프 후 상대 포켓몬의 방어력 : %d\n", shmp[opponentID].selectedMonster.stats.defensePower);
 		}
 
 		return;
@@ -684,10 +683,10 @@ void Run_healSkill(FILE* fp, struct healSkill rec_HS, struct player* shmp, int p
 	if (fread(&rec_HS, sizeof(rec_HS), 1, fp) > 0)
 	{
 		printf("스킬 ID : %d  스킬이름 : %s  타입 : %s  힐량 : %d\n", rec_HS.sid, rec_HS.skill_name, "힐", rec_HS.heal_value);
-		printf(("DEBUG| 회복 전 플레이어 포켓몬의 체력 : %d\n", shmp[playerID].selectedMonster.stats.HP));
+		printf("DEBUG| 회복 전 플레이어 포켓몬의 체력 : %d\n", shmp[playerID].selectedMonster.stats.HP);
 
 		shmp[playerID].selectedMonster.stats.HP += rec_HS.heal_value;
 
-		printf(("DEBUG| 회복 후 플레이어 포켓몬의 체력 : %d\n", shmp[playerID].selectedMonster.stats.HP));
+		printf("DEBUG| 회복 후 플레이어 포켓몬의 체력 : %d\n", shmp[playerID].selectedMonster.stats.HP);
 	}
 }
