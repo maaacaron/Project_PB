@@ -71,8 +71,9 @@ int main(int argc, char*argv[]) // 플레이어가 입력받은 아이디를 받
 
 	waitingPlayer_All_BattleEnd(shmp);
 	Check_Loser(playerID, shmp);
-
 	Check_Winner(playerID, shmp);
+
+	return;
 }
 
 void Check_Loser(int playerID, struct player* shmp)
@@ -82,8 +83,8 @@ void Check_Loser(int playerID, struct player* shmp)
 	{
 		printf("\n당신은 패배하였다. (프로그램 종료)\n");
 		shmdt(shmp);
+		exit(0); // 여기부분 수정함.
 	}
-	exit(0);
 }
 
 void Check_Winner(int playerID, struct player* shmp)
