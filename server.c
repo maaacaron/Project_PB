@@ -59,9 +59,9 @@ int main()                          //마지막 플레이어까지 접속하여 
     printf("플레이어 데이터를 수집중입니다...\n");
 
     //플레이어 정보 입력
-    while (accessCount < 5)
+    while (accessCount < 4)
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i <= 5; i++)
         {
             if (shmaddr[i].flag == 1)
             { // 새로운 데이터가 들어온 슬롯만 처리
@@ -75,34 +75,10 @@ int main()                          //마지막 플레이어까지 접속하여 
         }
     }
 
-    int dead1_flag = 0;
-    int dead2_flag = 0;
-    int dead3_flag = 0;
-    int dead4_flag = 0;
 
     // 종료 방지
-    while (dead1_flag + dead2_flag + dead3_flag + dead4_flag < 4)
+    while (shmaddr[5].is_dead != 1)
     {
-        printf("%d", dead1_flag + dead2_flag + dead3_flag + dead4_flag);
-
-        if (shmaddr[1].is_dead != 0)
-        {
-            dead1_flag = 1;
-        }
-
-        if (shmaddr[2].is_dead != 0)
-        {
-            dead2_flag = 1;
-        }
-
-        if (shmaddr[3].is_dead != 0)
-        {
-            dead3_flag = 1;
-        }
-
-        if (shmaddr[4].is_dead != 0)
-        {
-            dead4_flag = 1;
-        }
+        printf("서버 실행중");
     }
 }

@@ -242,7 +242,8 @@ void checkMyMonsterScene(int playerID)
     }
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char* argv[]) // 플레이어가 입력한 아이디값 그대로 받음 0번. 
+// 포켓몬 생성할 때 공유메모리[아이디 번호]에 저장됨 아이디 0 입력했으면 공유메모리[0]에 저장됨.
 {
     int eid[TOTAL_GROWING_DATE];
     int specialEventCount = 0;

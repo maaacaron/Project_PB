@@ -93,18 +93,18 @@ int main()
     int playerID = scan_playerID();
 
 
-    while (1) {
-        if (shmaddr->flag != 1) {
-            if (shmaddr->isServerRunning != 1) {
+    while (1) 
+    {
+        if (shmaddr[5].flag != 1) {
+            if (shmaddr[5].isServerRunning != 1) {
                 printf("서버가 실행되지 않았습니다. 서버를 실행합니다.\n");
-                shmaddr->isServerRunning = 1; // 서버 실행 중으로 업데이트
+                shmaddr[5].isServerRunning = 1; // 서버 실행 중으로 업데이트
 
 
                 printf("서버가 성공적으로 실행되었습니다.\n");
             }
-            shmaddr->flag = 1;                  // 서버에 값 전달 중 표시
-            shmaddr[playerID + 1].playerID = playerID;       // 입력된 플레이어 ID 저장
-            shmaddr->isMyTurn = 0;              // 초기화
+            shmaddr[5].flag = 1;                  // 서버에 값 전달 중 표시
+            shmaddr[playerID].playerID = playerID;       // 입력된 플레이어 ID 저장
             break;
         }
     }
@@ -120,7 +120,7 @@ int main()
     if (pid == 0)
     {
         printf("자식프로세스에서 main.c 실행");
-        execl("./main", "main", playerIDStr, NULL);
+        execl("./main", "main", playerIDStr, NULL); // 맨 처음에 입력받은 아이디 그대로 넘겨줌
     }
     else //pokemonTournament가 종료되면, 자식 프로세스에서 입력 안 됨
     {

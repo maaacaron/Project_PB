@@ -125,17 +125,20 @@ void callBattleScene(int playerID)
         perror("execl 실패");
         exit(1);
     }
+
     else //부모 프로세스
     {
         child = wait(&status);
         printf("자식프로세스 %d 종료. 배틀씬이 종료되었습니다. 수고하셨습니다.\n", child);
+        ///aaaaaaa 여기만 실행됨
     }
+    //// 여기는 실행 안딤
 }
 
 int main(int argc, char* argv[])
 {
 
-    int receivedPlayerID = atoi(argv[1]);
+    int receivedPlayerID = atoi(argv[1]); // 맨처음 입력한 아이디 그대로 0이면 0 5면 5
     struct monster selectedMonster;
 
     int choice;

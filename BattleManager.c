@@ -15,26 +15,22 @@
 #define MAXLINE 256
 
 void Check_Loser(int playerID, struct player* shmp);
-int findPlayerIndexByID(struct player* shmp, int playerID);
-void Check_Winner(int playerID, int processID, struct player* shmp);
+void Check_Winner(int playerID, struct player* shmp);
 void waitingPlayer_All_BattleEnd(struct player* shmp);
 void MakePipe(int fd[2]);
 void Write_to_Pipe(int fd[2], int winnerPlayerID);
 void Read_to_Pipe(int fd[2], int* winnerPlayerID);
 
 // 두 플레이어 간의 상호작용을 도와주는 배틀 메니저. (사실상 서버 역할임)
-int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
+int main(int argc, char*argv[]) // 플레이어가 입력받은 아이디를 받아옴 0 이면 0..
 {
 	struct player* shmp; // 플레이어 공유 메모리 저장 공간
 
 	int pid, pid2, pid3, pid4, status;
 	int child = 0;
 
-	int playerID = 0;
-	int processID = 0;
-	playerID = atoi(argv[1]); // 플레이어 아이이디 ex 0
-
-	char processID_str[MAXLINE];
+	int playerID = atoi(argv[1]); // 플레이어 아이디 입력받은 값 그대로 들고올거임 0,1,2,3
+	char playerID_str[MAXLINE];
 
 	int shmid;
 	key_t key;
@@ -54,100 +50,43 @@ int main(int argc, char*argv[]) // 플레이어 ID 넘겨 받을것.
 
 	// 해당 프로세스에 플레이어 공유 메모리 부착
 	shmp = (struct player*)shmat(shmid, NULL, 0);
-	processID = findPlayerIndexByID(shmp, playerID); // 생성할 때 순차적으로 부여되는 프로세스 아이디 (1, 2, 3, 4..) 플레이어 아이디가 0이면 프로세스 아이디는 1
 
 	printf("[Battle Manager]: |서버 구동 시작...|\n");
 
-	Check_Loser(processID, shmp);
-
-	if (processID == 1) // who am i == 1
+	if ((pid = fork()) == 0)
 	{
-		sleep(1);
-		if ((pid = fork()) == 0)
-		{
-			printf("\n[Battle Manager]: 플레이어 %d 배틀 프로세스 시작..\n", processID + 1);
+		printf("\n[Battle Manager]: 플레이어 %d 배틀 프로세스 시작..\n", playerID);
 
-			// 플레이어 아이디를 Battle Client에 넘겨주기 위해 문자열로 만들기
-			snprintf(processID_str, sizeof(processID_str), "%d", processID);
+		// 플레이어 아이디를 Battle Client에 넘겨주기 위해 문자열로 만들기
+		snprintf(playerID_str, sizeof(playerID_str), "%d", playerID);
 
-			// Battle Client 실행
-			execl("./Battle_Client_Skill", "./Battle_Client_Skill", processID_str, NULL);
-			perror("execl");
-			exit(5);
-		}
+		// Battle Client 실행
+		execl("./Battle_Client_Skill", "./Battle_Client_Skill", playerID_str, NULL); // 입력받은 플레이어 아이디 그대로 넘겨줄거임..
+		perror("execl");
+		exit(0);
 	}
 
-	if (processID == 2) // who am i == 1
-	{
-		sleep(1);
-		if ((pid2 = fork()) == 0)
-		{
-			printf("\n[Battle Manager]: 플레이어 %d 배틀 프로세스 시작..\n", processID + 1);
-
-			// 플레이어 아이디를 Battle Client에 넘겨주기 위해 문자열로 만들기
-			snprintf(processID_str, sizeof(processID_str), "%d", processID);
-
-			// Battle Client 실행
-			execl("./Battle_Client_Skill", "./Battle_Client_Skill", processID_str, NULL);
-			perror("execl");
-			exit(5);
-		}
-	}
-
-	if (processID == 3) // who am i == 1
-	{
-		sleep(1);
-		if ((pid3 = fork()) == 0)
-		{
-			printf("\n[Battle Manager]: 플레이어 %d 배틀 프로세스 시작..\n", processID + 1);
-
-			// 플레이어 아이디를 Battle Client에 넘겨주기 위해 문자열로 만들기
-			snprintf(processID_str, sizeof(processID_str), "%d", processID);
-
-			// Battle Client 실행
-			execl("./Battle_Client_Skill", "./Battle_Client_Skill", processID_str, NULL);
-			perror("execl");
-			exit(5);
-		}
-	}
-
-	if (processID == 4) // who am i == 1
-	{
-		sleep(1);
-		if ((pid4 = fork()) == 0)
-		{
-			printf("\n[Battle Manager]: 플레이어 %d 배틀 프로세스 시작..\n", processID + 1);
-
-			// 플레이어 아이디를 Battle Client에 넘겨주기 위해 문자열로 만들기
-			snprintf(processID_str, sizeof(processID_str), "%d", processID);
-
-			// Battle Client 실행
-			execl("./Battle_Client_Skill", "./Battle_Client_Skill", processID_str, NULL);
-			perror("execl");
-			exit(5);
-		}
-	}
-
+	// 입력 권한 넘겨주기
 	child = wait(&status);
-	waitingPlayer_All_BattleEnd(shmp);
-	Check_Loser(processID, shmp);
 
-	Check_Winner(playerID, processID, shmp);
+	waitingPlayer_All_BattleEnd(shmp);
+	Check_Loser(playerID, shmp);
+
+	Check_Winner(playerID, shmp);
 }
 
-void Check_Loser(int processID, struct player* shmp)
+void Check_Loser(int playerID, struct player* shmp)
 {
 	// processID: who am i | shmp[~]: is_dead
-	if (shmp[processID].is_dead == 1) //shmp[3]: is_dead
+	if (shmp[playerID].is_dead == 1) //shmp[3]: is_dead
 	{
-		shmp[processID].is_dead = 1;
 		printf("\n당신은 패배하였다. (프로그램 종료)\n");
 		shmdt(shmp);
 	}
-	return;
+	exit(0);
 }
 
-void Check_Winner(int playerID, int processID, struct player* shmp)
+void Check_Winner(int playerID, struct player* shmp)
 {
 	int count = 0;
 	// processID: who am i | shmp[~]: is_dead
@@ -213,20 +152,6 @@ void Check_Winner(int playerID, int processID, struct player* shmp)
 	return;
 }
 
-// 플레이어 ID를 사용해 프로세스 ID를 탐색 (플레이어가 생성된 순서대로 부여되는 번호)
-int findPlayerIndexByID(struct player* shmp, int playerID)
-{
-	for (int i = 1; i < 5; i++) // <- 서버 0번으로 인해 수정함
-	{ // 4명 기준
-		if (shmp[i].playerID == playerID) // shmp[1].playerID = 0 
-		{
-			return i; // 해당 플레이어의 인덱스 반환 1반환
-		}
-	}
-	perror("noFoundPID");
-	exit(1);
-}
-
 void waitingPlayer_All_BattleEnd(struct player* shmp)
 {
 	int flag1 = 0;
@@ -235,25 +160,25 @@ void waitingPlayer_All_BattleEnd(struct player* shmp)
 	int flag4 = 0;
 
 	printf("\n[BattleManager]: 다른 모든 플레이어가 전투가 끝날 때 까지 대기중..\n");
-	printf("|p1: %d |p2: %d |p3: %d |p4: %d\n", shmp[1].is_battle_end, shmp[2].is_battle_end, shmp[3].is_battle_end, shmp[4].is_battle_end);
+	printf("|p1: %d |p2: %d |p3: %d |p4: %d\n", shmp[0].is_battle_end, shmp[1].is_battle_end, shmp[2].is_battle_end, shmp[3].is_battle_end);
 	while (flag1 + flag2 + flag3 + flag4 < 4)
 	{
-		if (shmp[1].is_battle_end == 1 && flag1 == 0) //플레이어 1 전투 끝났나?
+		if (shmp[0].is_battle_end == 1 && flag1 == 0) //플레이어 1 전투 끝났나?
 		{
 			flag1 = 1;
 		}
 
-		if (shmp[2].is_battle_end == 1 && flag2 == 0) // 플레이어 2 전투 끝났나?
+		if (shmp[1].is_battle_end == 1 && flag2 == 0) // 플레이어 2 전투 끝났나?
 		{
 			flag2 = 1;
 		}
 
-		if (shmp[3].is_battle_end == 1 && flag3 == 0) // 플레이어 2 전투 끝났나?
+		if (shmp[2].is_battle_end == 1 && flag3 == 0) // 플레이어 2 전투 끝났나?
 		{
 			flag3 = 1;
 		}
 
-		if (shmp[4].is_battle_end == 1 && flag4 == 0) // 플레이어 2 전투 끝났나?
+		if (shmp[3].is_battle_end == 1 && flag4 == 0) // 플레이어 2 전투 끝났나?
 		{
 			flag4 = 1;
 		}

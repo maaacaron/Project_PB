@@ -8,7 +8,7 @@
 #include "player.h"
 
 
-void checkMySkillInfo(int receivedPlayerID, struct player* shmaddr)
+void checkMySkillInfo(int receivedPlayerID, struct player* shmaddr) // 사용자가 입력한 아이디값 그대로 받아옴
 {
     int pid;
     int status;
