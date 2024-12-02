@@ -196,12 +196,12 @@ void trigger_event(FILE* fp, int playerID, int eid)
     }
     else if(selected == 4)
     {
-        printf("%s\n", rec.select_1.result);
+        printf("%s\n", rec.select_4.result);
         add_price(playerID, rec.select_4.prices);
     }
     else if(selected == 5)
     {
-        printf("%s\n", rec.select_1.result);
+        printf("%s\n", rec.select_5.result);
         add_price(playerID, rec.select_5.prices);
     }
 }
@@ -279,8 +279,8 @@ int main(int argc, char* argv[]) // 플레이어가 입력한 아이디값 그�
         
         if(i == 2)  //3일째 이벤트이면 스킬 이벤트(2, 4번째 스킬)
         {
-            if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_2_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 1;
-            else eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 3;
+            if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_2_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM;
+            else eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 2;
         }
         trigger_event(fp, receivedPlayerID, eid[i]);
 
