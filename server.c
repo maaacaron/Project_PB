@@ -75,6 +75,10 @@ int main()                          //마지막 플레이어까지 접속하여 
         }
     }
 
+    unlink("./battlefifo1");
+    unlink("./battlefifo2");
+    unlink("./battlefifo3");
+    unlink("./battlefifo4");
     if (mkfifo("./battlefifo1", 0666) == -1) {
         perror("mkfifo");
         exit(1);

@@ -234,7 +234,7 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 	struct player* shmp; // p1 공유 메모리 저장 공간
 
 	int opponentID = 0;
-	int fd1, fd2, fd3, fd4;
+	int fd1, fd2;
 	int opponentSpeed;
 	int firstTurn;
 
@@ -298,8 +298,8 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 			opponentID = 0;
 			fd1 = open("./battlefifo2", O_WRONLY);
 			fd2 = open("./battlefifl1", O_RDONLY);
-			write(fd2, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
-			read(fd1, &opponentSpeed, sizeof(opponentSpeed));
+			write(fd1, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
+			read(fd2, &opponentSpeed, sizeof(opponentSpeed));
 		}
 
 		if (playerID == 2)
@@ -308,8 +308,8 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 			opponentID = 3;
 			fd1 = open("./battlefifo3", O_WRONLY);
 			fd2 = open("./battlefifl4", O_RDONLY);
-			write(fd3, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
-			read(fd4, &opponentSpeed, sizeof(opponentSpeed));
+			write(fd1, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
+			read(fd2, &opponentSpeed, sizeof(opponentSpeed));
 		}
 
 		if (playerID == 3)
@@ -318,8 +318,8 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 			opponentID = 2;
 			fd1 = open("./battlefifo4", O_WRONLY);
 			fd2 = open("./battlefifl3", O_RDONLY);
-			write(fd4, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
-			read(fd3, &opponentSpeed, sizeof(opponentSpeed));
+			write(fd1, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
+			read(fd2, &opponentSpeed, sizeof(opponentSpeed));
 		}
 		close(fd1);
 		close(fd2);
