@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/ipc.h>
@@ -233,6 +234,9 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 	struct player* shmp; // p1 공유 메모리 저장 공간
 
 	int opponentID = 0;
+	int fd1, fd2, fd3, fd4;
+	int opponentSpeed;
+	int firstTurn;
 
 	// 키값(키 정보) 설정
 	key = ftok("main", 1);
@@ -260,6 +264,17 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 			{
 				opponentID = i;
 			}
+			if (playerID < opponentID) // 플레이어 아이디 0,1,2,3
+			{
+				fd1 = open("./battlefifo1", O_WRONLY);
+				fd2 = open("./battlefifl2", O_RDONLY);
+			}
+
+			else
+			{
+				fd1 = open("./battlefifo2", O_WRONLY);
+				fd2 = open("./battlefifl1", O_RDONLY);
+			}
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,25 +286,43 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 		{
 			// p1 vs p2
 			opponentID = 1;
+			fd1 = open("./battlefifo1", O_WRONLY);
+			fd2 = open("./battlefifl2", O_RDONLY);
+			write(fd1, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
+			read(fd2, &opponentSpeed, sizeof(opponentSpeed));
 		}
 
 		if (playerID == 1)
 		{
 			// p2 vs p1
 			opponentID = 0;
+			fd1 = open("./battlefifo2", O_WRONLY);
+			fd2 = open("./battlefifl1", O_RDONLY);
+			write(fd2, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
+			read(fd1, &opponentSpeed, sizeof(opponentSpeed));
 		}
 
 		if (playerID == 2)
 		{
 			// p3 vs p4
 			opponentID = 3;
+			fd1 = open("./battlefifo3", O_WRONLY);
+			fd2 = open("./battlefifl4", O_RDONLY);
+			write(fd3, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
+			read(fd4, &opponentSpeed, sizeof(opponentSpeed));
 		}
 
 		if (playerID == 3)
 		{
 			// p4 vs p3
 			opponentID = 2;
+			fd1 = open("./battlefifo4", O_WRONLY);
+			fd2 = open("./battlefifl3", O_RDONLY);
+			write(fd4, &shmp[playerID].selectedMonster.stats.speed, sizeof(shmp[playerID].selectedMonster.stats.speed));
+			read(fd3, &opponentSpeed, sizeof(opponentSpeed));
 		}
+		close(fd1);
+		close(fd2);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -305,25 +338,32 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 	Print_Battle_Begine(shmp, playerID, opponentID); // 배틀 문구 프린트
 
 	// 각 포켓몬 스피드값 비교하여 선제턴 주기
-	if (shmp[playerID].selectedMonster.stats.speed == shmp[opponentID].selectedMonster.stats.speed) // 해당 경우 처리 해줘야함.
+	if (shmp[playerID].selectedMonster.stats.speed == opponentSpeed) // 해당 경우 처리 해줘야함.
 	{
-		if (shmp[playerID].equal_flag == 0 && shmp[opponentID].equal_flag == 0) // 배틀씬 먼저 들어온 사람한테 스피드+1해줌.
+		if (playerID < opponentID) // 배틀씬 먼저 들어온 사람한테 스피드+1해줌.
 		{
-			shmp[playerID].equal_flag = 1;
-			shmp[opponentID].equal_flag = 1;
-
-			shmp[playerID].selectedMonster.stats.speed++;
+            srand((unsigned int) time(NULL));
+            firstTurn = rand() % 2;
+			if(firstTurn == 0)
+			{
+				shmp[playerID].selectedMonster.stats.speed++;
+			}
+			if(firstTurn == 1)
+			{
+				shmp[opponentID].selectedMonster.stats.speed++;
+				opponentSpeed++;
+			}
 		}
 		sleep(1);
 	}
 
-	if (shmp[playerID].selectedMonster.stats.speed > shmp[opponentID].selectedMonster.stats.speed) // 내 포켓몬이 상대 포켓몬보다 빠르면
+	if (shmp[playerID].selectedMonster.stats.speed > opponentSpeed) // 내 포켓몬이 상대 포켓몬보다 빠르면
 	{
 		shmp[playerID].isMyTurn = 1;
 		shmp[opponentID].isMyTurn = 0;
 	}
 
-	if (shmp[opponentID].selectedMonster.stats.speed > shmp[playerID].selectedMonster.stats.speed)
+	if (opponentSpeed > shmp[playerID].selectedMonster.stats.speed)
 	{
 		shmp[playerID].isMyTurn = 0;
 		shmp[opponentID].isMyTurn = 1;
@@ -333,7 +373,7 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 	// 만약 플레이어의 턴이면 공격 기회 얻기
 	if (shmp[playerID].isMyTurn == 1)
 	{
-		printf("\nDebug| p1 Speed: %d, p2 Speed: %d\n", shmp[playerID].selectedMonster.stats.speed, shmp[opponentID].selectedMonster.stats.speed);
+		printf("\nDebug| p1 Speed: %d, p2 Speed: %d\n", shmp[playerID].selectedMonster.stats.speed, opponentSpeed);
 		player_turn_attack(shmp, playerID, opponentID);
 	}
 

@@ -75,6 +75,22 @@ int main()                          //마지막 플레이어까지 접속하여 
         }
     }
 
+    if (mkfifo("./battlefifo1", 0666) == -1) {
+        perror("mkfifo");
+        exit(1);
+    }
+    if (mkfifo("./battlefifo2", 0666) == -1) {
+        perror("mkfifo");
+        exit(1);
+    }
+    if (mkfifo("./battlefifo3", 0666) == -1) {
+        perror("mkfifo");
+        exit(1);
+    }
+    if (mkfifo("./battlefifo4", 0666) == -1) {
+        perror("mkfifo");
+        exit(1);
+    }
 
     // 종료 방지
     while (shmaddr[5].is_dead != 1)
