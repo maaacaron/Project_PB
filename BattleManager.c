@@ -17,6 +17,7 @@
 void Check_Loser(int playerID, struct player* shmp);
 void Check_Winner(int playerID, struct player* shmp);
 void waitingPlayer_All_BattleEnd(struct player* shmp);
+void waitingPlayer_All_BattleReady(struct player* shmp);
 void MakePipe(int fd[2]);
 void Write_to_Pipe(int fd[2], int winnerPlayerID);
 void Read_to_Pipe(int fd[2], int* winnerPlayerID);
@@ -53,6 +54,9 @@ int main(int argc, char*argv[]) // 플레이어가 입력받은 아이디를 받
 
 	printf("[Battle Manager]: |서버 구동 시작...|\n");
 
+	shmp[playerID].is_battle_ready = 1;
+	waitingPlayer_All_BattleReady(shmp);
+
 	if ((pid = fork()) == 0)
 	{
 		printf("\n[Battle Manager]: 플레이어 %d 배틀 프로세스 시작..\n", playerID);
@@ -68,6 +72,8 @@ int main(int argc, char*argv[]) // 플레이어가 입력받은 아이디를 받
 
 	// 입력 권한 넘겨주기
 	child = wait(&status);
+
+	shmp[playerID].is_battle_ready = 0;
 
 	waitingPlayer_All_BattleEnd(shmp);
 	Check_Loser(playerID, shmp);
@@ -184,6 +190,41 @@ void waitingPlayer_All_BattleEnd(struct player* shmp)
 			flag4 = 1;
 		}
 	}
+	return;
+}
+
+void waitingPlayer_All_BattleReady(struct player* shmp)
+{
+	int flag1 = 0;
+	int flag2 = 0;
+	int flag3 = 0;
+	int flag4 = 0;
+
+	printf("\n[BattleManager]: 다른 모든 플레이어가 토너먼트 참가할 때 까지 대기중..\n");
+	printf("|p0: %d |p1: %d |p2: %d |p3: %d\n", shmp[0].is_battle_ready, shmp[1].is_battle_ready, shmp[2].is_battle_ready, shmp[3].is_battle_ready);
+	while (flag1 + flag2 + flag3 + flag4 < 4)
+	{
+		if ((shmp[0].is_battle_ready == 1 && flag1 == 0) || (shmp[0].is_dead == 1)) //플레이어 1 전투 준비 되었는지
+		{
+			flag1 = 1;
+		}
+
+		if ((shmp[1].is_battle_ready == 1 && flag2 == 0) || (shmp[1].is_dead == 1))
+		{
+			flag2 = 1;
+		}
+
+		if ((shmp[2].is_battle_ready == 1 && flag3 == 0) || (shmp[2].is_dead == 1))
+		{
+			flag3 = 1;
+		}
+
+		if ((shmp[3].is_battle_ready == 1 && flag4 == 0) || (shmp[3].is_dead == 1))
+		{
+			flag4 = 1;
+		}
+	}
+
 	return;
 }
 

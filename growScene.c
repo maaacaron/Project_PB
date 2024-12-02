@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include "event.h"
 #include "player.h"
-#define TOTAL_GROWING_DATE 1 // 이거 원래 4였음 수정수정
+#define TOTAL_GROWING_DATE 4 // 이거 원래 4였음 수정수정
 
 // 성장 씬 함수 
 struct player *shmaddr;

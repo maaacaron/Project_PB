@@ -55,7 +55,7 @@ int main()
             exit(1);
         }
         printf("공유 메모리를 초기화합니다.\n");
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             shmaddr[i].isServerRunning = 0; // 서버 실행 상태 초기화
             shmaddr[i].flag = 0;
             shmaddr[i].isMyTurn = 0;

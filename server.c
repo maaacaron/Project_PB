@@ -59,7 +59,7 @@ int main()                          //마지막 플레이어까지 접속하여 
     printf("플레이어 데이터를 수집중입니다...\n");
 
     //플레이어 정보 입력
-    while (accessCount < 4)
+    while (accessCount < 5) // <<- 서버 포함 3명이 되는 순간 서버 실행중 표시되는듯? 여기 잘못건들면 터짐
     {
         for (int i = 0; i <= 5; i++)
         {

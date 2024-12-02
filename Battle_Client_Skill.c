@@ -306,14 +306,22 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 	start_hp = shmp[playerID].selectedMonster.stats.HP;
 	start_speed = shmp[playerID].selectedMonster.stats.speed;
 
+	shmp[playerID].equal_flag = 0;
+
 	Reset_Shm(shmp, playerID, opponentID); // 공유 메모리 값들 중 포켓몬 관련 함수 초기화
 	Print_Battle_Begine(shmp, playerID, opponentID); // 배틀 문구 프린트
 
 	// 각 포켓몬 스피드값 비교하여 선제턴 주기
 	if (shmp[playerID].selectedMonster.stats.speed == shmp[opponentID].selectedMonster.stats.speed) // 해당 경우 처리 해줘야함.
 	{
-		shmp[playerID].isMyTurn = 1;
-		shmp[opponentID].isMyTurn = 0;
+		if (shmp[playerID].equal_flag == 0 && shmp[opponentID].equal_flag == 0) // 배틀씬 먼저 들어온 사람한테 스피드+1해줌.
+		{
+			shmp[playerID].equal_flag = 1;
+			shmp[opponentID].equal_flag = 1;
+
+			shmp[playerID].selectedMonster.stats.speed++;
+		}
+		sleep(1);
 	}
 
 	if (shmp[playerID].selectedMonster.stats.speed > shmp[opponentID].selectedMonster.stats.speed) // 내 포켓몬이 상대 포켓몬보다 빠르면

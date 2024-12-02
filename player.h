@@ -17,6 +17,8 @@ struct player
     int is_dead; // [5] 죽었는지 판단하는 변수
     int is_battle_end; // [6] 배틀이 끝났는지 판단하는 변수
     int is_wined; // [7] 총 이긴 횟수를 저장하는 변수
+    int is_battle_ready;
+    int equal_flag;
     // 최근 선택한 스킬 종류를 저장하는 변수도 만들어야 함...
 
     struct monster selectedMonster;
