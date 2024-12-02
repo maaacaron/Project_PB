@@ -264,36 +264,39 @@ int main(int argc, char* argv[]) // 플레이어가 입력한 아이디값 그�
         trigger_event(fp, receivedPlayerID, eid[0]);
         exit(1);
     }
-    for(int i = 0; i < TOTAL_GROWING_DATE; i++)
+    else
     {
-        srand((unsigned int) time(NULL));
-        eid[i] = rand() % MAX_NORMALEVENT_NUM;
-        for(int j = 0; j < i; j++)
+        for(int i = 0; i < TOTAL_GROWING_DATE; i++)
         {
-            if(eid[i] == eid[j])
+            srand((unsigned int) time(NULL));
+            eid[i] = rand() % MAX_NORMALEVENT_NUM;
+            for(int j = 0; j < i; j++)
             {
-                if(specialEventCount < MAX_SPECIALEVENT_NUM) eid[i] = MAX_NORMALEVENT_NUM + ++specialEventCount;      //같은 이벤트가 나오면 스페셜 이벤트로 전환(최대 3회)
-                break;
+                if(eid[i] == eid[j])
+                {
+                    if(specialEventCount < MAX_SPECIALEVENT_NUM) eid[i] = MAX_NORMALEVENT_NUM + ++specialEventCount;      //같은 이벤트가 나오면 스페셜 이벤트로 전환(최대 3회)
+                    break;
+                }
             }
-        }
-        
-        if(i == 2)  //3일째 이벤트이면 스킬 이벤트(2, 4번째 스킬)
-        {
-            if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_2_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM;
-            else eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 2;
-        }
-        trigger_event(fp, receivedPlayerID, eid[i]);
-
-        do
-        {
-            printf("다음날로 이동하기 : 1  /  내 포켓몬 확인하기 : 2\n");
-            scanf("%d", &choice);
-            if(choice == 2)
+            
+            if(i == 2)  //3일째 이벤트이면 스킬 이벤트(2, 4번째 스킬)
             {
-                checkMyMonsterScene(receivedPlayerID);
+                if(shmaddr[receivedPlayerID].selectedMonster.skills.skill_2_ID == -1) eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM;
+                else eid[i] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 2;
             }
-        } while(choice != 1);
+            trigger_event(fp, receivedPlayerID, eid[i]);
 
-        while(getchar() != '\n');
+            do
+            {
+                printf("다음날로 이동하기 : 1  /  내 포켓몬 확인하기 : 2\n");
+                scanf("%d", &choice);
+                if(choice == 2)
+                {
+                    checkMyMonsterScene(receivedPlayerID);
+                }
+            } while(choice != 1);
+
+            while(getchar() != '\n');
+        }
     }
 }
