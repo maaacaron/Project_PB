@@ -65,11 +65,6 @@ void saveMonsterToSharedMemory(int playerID, struct monster* selectedMonster, st
     shmaddr[playerID].selectedMonster = *selectedMonster;
     shmaddr[playerID].flag = 1; // 데이터 저장 완료 플래그
     printf("플레이어 %d의 몬스터 데이터가 공유 메모리에 저장되었습니다.\n", playerID);
-
-    if (shmdt(shmaddr) == -1) {
-        perror("공유 메모리 분리 실패");
-        exit(1);
-    }
 }
 
 
