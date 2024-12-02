@@ -202,9 +202,9 @@ int main(int argc, char* argv[])
     //배틀씬으로
     callBattleScene(receivedPlayerID);
 
-    if (shmaddr[receivedPlayerID + 1].is_dead == 1) // 배틀씬 끝난 후 패배한 플레이어라면
+    if (shmaddr[receivedPlayerID].is_dead == 1) // 배틀씬 끝난 후 패배한 플레이어라면 수정1
     {
-        printf("\nprocess %d is_dead == %d \n", receivedPlayerID + 1, shmaddr[receivedPlayerID + 1].is_dead);
+        printf("\nprocess %d is_dead == %d \n", receivedPlayerID, shmaddr[receivedPlayerID].is_dead); // 수정2
         exit(0);
     }
 
