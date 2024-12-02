@@ -138,12 +138,12 @@ void player_turn_attack(struct player* shmp, int playerID, int opponentID)
 		printf("[Battle Manager]: 당신은 승리하였습니다. 메인 화면으로 돌아갑니까?\n");
 		printf("[Battle Manager]: 예: 1, 아니요: 0\n");
 
-		scanf("%d", &answer);
-		printf("[Battle Manager]: 메인 화면으로 돌아갑니다..\n");
 		Reset_Shm(shmp, playerID, opponentID); // is_wined가 1일때 battle_end가 0으로 초기화되니 주의
 
 		shmp[playerID].is_wined = 1;
 
+		scanf("%d", &answer);
+		printf("[Battle Manager]: 메인 화면으로 돌아갑니다..\n");
 		shmdt(shmp);
 		return;
 	}
