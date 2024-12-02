@@ -99,6 +99,7 @@ void player_turn_attack(struct player* shmp, int playerID, int opponentID)
 			printf("stdin 상태: EOF=%d\n", feof(stdin));
 			exit(0);
 		}
+		sscanf(buffer, "%d", &answer);
 
 		break;
 	}
