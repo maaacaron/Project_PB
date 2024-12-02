@@ -16,9 +16,9 @@ struct player *shmaddr;
 void add_skill(int playerID, struct price add)
 {
     struct monsterSkill *rec = &shmaddr[playerID].selectedMonster.skills;
-    if (rec->skill_2_ID = -1) rec->skill_2_ID = add.skill;
-    else if (rec->skill_3_ID = -1) rec->skill_3_ID = add.skill;
-    else if (rec->skill_4_ID = -1) rec->skill_4_ID = add.skill;
+    if (rec->skill_2_ID == -1) rec->skill_2_ID = add.skill;
+    else if (rec->skill_3_ID == -1) rec->skill_3_ID = add.skill;
+    else if (rec->skill_4_ID == -1) rec->skill_4_ID = add.skill;
 }
 
 void add_price(int playerID, struct price add)      //보상 추가
@@ -260,7 +260,7 @@ int main(int argc, char* argv[]) // 플레이어가 입력한 아이디값 그�
 
     if(strcmp(argv[1], "skill") == 0)   //인수로 skill을 받아왔으면 스킬 이벤트 실행(3번째 스킬 얻는 이벤트)
     {
-        eid[0] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 2;
+        eid[0] = MAX_NORMALEVENT_NUM + MAX_SPECIALEVENT_NUM + 1;
         trigger_event(fp, receivedPlayerID, eid[0]);
         exit(1);
     }
