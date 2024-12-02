@@ -140,14 +140,16 @@ void player_turn_attack(struct player* shmp, int playerID, int opponentID)
 		shmp[opponentID].is_dead = 1; // isdead = 1;
 		shmp[playerID].is_battle_end = 1; // is_battle_End = 1;
 		shmp[opponentID].is_battle_end = 1; // is_battle_End = 1;
-		shmp[opponentID].is_wined = 1; // is_battle_End = 1;
 
 		printf("[Battle Manager]: 당신은 승리하였습니다. 메인 화면으로 돌아갑니까?\n");
 		printf("[Battle Manager]: 예: 1, 아니요: 0\n");
 
 		scanf("%d", &answer);
 		printf("[Battle Manager]: 메인 화면으로 돌아갑니다..\n");
-		Reset_Shm(shmp, playerID, opponentID);
+		Reset_Shm(shmp, playerID, opponentID); // is_wined가 1일때 battle_end가 0으로 초기화되니 주의
+
+		shmp[playerID].is_wined = 1;
+
 		shmdt(shmp);
 		return;
 	}
@@ -346,7 +348,7 @@ void Devide_Team(int playerID) // 플레이어가 맨 처음에 입력받은 값
 
 void Reset_Shm(struct player* shmp, int playerID, int opponentID) // 플레이어 아이디는 0,1,2,3 등 직접 입력받은 값..
 {
-	if (shmp[playerID].is_wined == 1) // 2번째 경기라면
+	if (shmp[playerID].is_wined == 1 && shmp[opponentID].selectedMonster.stats.HP > 0) // 2번째 경기 시작 전에 is_battle_end = 0으로 만들어 주기
 	{
 		shmp[playerID].is_battle_end = 0;
 	}

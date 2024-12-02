@@ -86,8 +86,6 @@
     <ClCompile Include="createEvent.c" />
     <ClCompile Include="createMonster.c" />
     <ClCompile Include="createSkill.c" />
-    <ClCompile Include="event.c" />
-    <ClCompile Include="eventTxtToBinary.c" />
     <ClCompile Include="growScene.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="pokemonTournament.c" />
@@ -104,7 +102,6 @@
     <ClInclude Include="skill.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="eventDex" />
     <None Include="Makefile" />
     <None Include="monsterDex" />
   </ItemGroup>

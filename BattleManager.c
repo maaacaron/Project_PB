@@ -73,7 +73,7 @@ int main(int argc, char*argv[]) // 플레이어가 입력받은 아이디를 받
 	Check_Loser(playerID, shmp);
 	Check_Winner(playerID, shmp);
 
-	return;
+	return 0;
 }
 
 void Check_Loser(int playerID, struct player* shmp)
