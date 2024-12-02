@@ -100,13 +100,6 @@ void player_turn_attack(struct player* shmp, int playerID, int opponentID)
 			exit(0);
 		}
 
-		// 입력 값 검증
-		if (sscanf(buffer, "%d", &answer) != 1 || (answer != 0 && answer != 1))
-		{
-			printf("stdin 상태: EOF=%d\n", feof(stdin));
-			exit(0);
-		}
-
 		break;
 	}
 
