@@ -130,6 +130,28 @@ void callBattleScene(int playerID)
     //// 여기는 실행 안딤
 }
 
+void callSkillAddScene(int playerID)
+{
+    int child, status, pid;
+    pid = fork();
+    if (pid == 0)
+    {
+        char playerIDStr[10];
+        sprintf(playerIDStr, "%d", playerID);
+
+        execl("./growScene", "./growScene", playerIDStr, "skill", NULL);
+        perror("execl 실패");
+        exit(1);
+    }
+
+    else //부모 프로세스
+    {
+        child = wait(&status);
+        printf("자식프로세스 %d 종료. 배틀씬이 종료되었습니다. 수고하셨습니다.\n", child);
+        ///aaaaaaa 여기만 실행됨
+    }
+}
+
 int main(int argc, char* argv[])
 {
 
@@ -207,6 +229,9 @@ int main(int argc, char* argv[])
         printf("\nprocess %d is_dead == %d \n", receivedPlayerID, shmaddr[receivedPlayerID].is_dead); // 수정2
         exit(0);
     }
+
+    // 스킬 하나 넣어주기
+    callSkillAddScene(receivedPlayerID);
 
     //두번째 성장씬으로
     callGrowScene(receivedPlayerID);

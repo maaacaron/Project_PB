@@ -73,7 +73,7 @@ void player_turn_attack(struct player* shmp, int playerID, int opponentID)
 	int answer = 0;
 	char buffer[MAXLINE];
 
-	printf("[Battle Manager]: || 당신의 턴! ||\n");
+	printf("\n[Battle Manager]: || 당신의 턴! ||\n");
 
 	// 스킬과 포켓몬은 사용자가 입력받은 인덱스에 저장되어 있음
 	printf("스킬 1: ");
@@ -179,7 +179,7 @@ void waiting_opponent(struct player* shmp, int playerID, int opponentID) // 플�
 		if (before_selectedMonster.stats.HP > After_selectedMonster.stats.HP) 
 			// 기다리기 전 내 포켓몬 HP와 기다린 후 HP가 다르면 상대방이 공격스킬을 썼다는 뜻
 		{
-			printf("[Battle Manager]: 상대는 당신의 포켓몬에게 %d의 피해를 입혔다.\n", After_selectedMonster.stats.HP - before_selectedMonster.stats.HP);
+			printf("[Battle Manager]: 상대는 당신의 포켓몬에게 %d의 피해를 입혔다.\n", before_selectedMonster.stats.HP - After_selectedMonster.stats.HP);
 			printf("[Battle Manager]: 당신의 포켓몬의 체력은 %d로 줄어들었다.\n\n", shmp[playerID].selectedMonster.stats.HP);
 		}
 

@@ -116,22 +116,7 @@ void Check_Winner(int playerID, struct player* shmp)
 	{
 		printf("\n당신은 첫 경기에서 승리하였다. (메인 프로그램으로)\n");
 		shmdt(shmp);
-		MakePipe(fd);
-
-		if ((pipePid = fork()) == 0) // 나오는 지 보려고 4인에 껴논거
-		{
-			int winnerPlayerID = playerID;
-			printf("%d\n", winnerPlayerID);
-
-			Write_to_Pipe(fd, winnerPlayerID);
-		}
-		else
-		{
-			wait(&status); // 자식 프로세스에서 전달하는 결과 대기
-			Read_to_Pipe(fd, &receivedWinnerID);
-		}
 		return;
-		//execl("./main", "main", playerID, NULL); // 메인프로그램으로 다시 이동
 	}
 
 	if (count == 1)
