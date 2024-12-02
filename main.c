@@ -147,7 +147,7 @@ void callSkillAddScene(int playerID)
     else //부모 프로세스
     {
         child = wait(&status);
-        printf("자식프로세스 %d 종료. 배틀씬이 종료되었습니다. 수고하셨습니다.\n", child);
+        printf("자식프로세스 %d 종료. 배틀 보상(스킬추가)씬이 종료되었습니다.\n", child);
         ///aaaaaaa 여기만 실행됨
     }
 }
